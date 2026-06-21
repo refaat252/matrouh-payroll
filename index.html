@@ -8,27 +8,125 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            color-scheme: light dark;
+        }
+
+        :root {
+            --bg-light: #f0f4ff;
+            --bg-light-2: #e6f0ff;
+            --bg-dark: #1a1f3a;
+            --bg-dark-2: #16213e;
+            --text-light: #0f172a;
+            --text-dark: #e0e0e0;
+            --card-light: #ffffff;
+            --card-dark: #2d3748;
+        }
+
         body {
             font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-light-2) 100%);
+            color: var(--text-light);
             min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-light: #1a1f3a;
+                --bg-light-2: #16213e;
+                --text-light: #e0e0e0;
+                --card-light: #2d3748;
+            }
+
+            body {
+                background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+                color: #e0e0e0;
+            }
+
+            .salary-card,
+            .search-container,
+            .email-modal {
+                background-color: #2d3748;
+                color: #e0e0e0;
+            }
+
+            .info-item,
+            .info-label {
+                color: #c7d2e0;
+            }
+
+            .info-value {
+                color: #ffffff;
+            }
+
+            input,
+            textarea {
+                background-color: #2d3748 !important;
+                color: #e0e0e0 !important;
+                border-color: #4a5568 !important;
+            }
+
+            .bg-blue-50 {
+                background-color: #2d3748 !important;
+            }
+
+            .text-slate-600,
+            .text-slate-700,
+            .text-slate-500 {
+                color: #cbd5e0 !important;
+            }
+
+            .text-slate-900 {
+                color: #e0e0e0 !important;
+            }
+
+            .info-item:hover {
+                background-color: #3a4556;
+            }
+
+            .highlight-box {
+                background: linear-gradient(135deg, #2d4a5f 0%, #1e3a52 100%);
+                border-left-color: #60a5fa;
+            }
+
+            .collapse-toggle-btn {
+                background: #2d3748;
+                color: #e0e0e0;
+            }
+
+            .collapse-toggle-btn:hover {
+                background: #3a4556;
+            }
+        }
+
         .search-container {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
             border-radius: 20px;
             overflow: hidden;
         }
+
         .search-container:hover {
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
         }
-        .result-card, .email-modal {
+
+        .result-card,
+        .email-modal {
             animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -41,6 +139,7 @@
                 transform: translateY(0);
             }
         }
+
         @keyframes slideUp {
             from {
                 opacity: 1;
@@ -53,6 +152,59 @@
                 transform: translateY(-10px);
             }
         }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media print {
+            .search-container,
+            .instructions-section,
+            #new-search-btn,
+            #print-btn,
+            #export-btn,
+            .highlight-box {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .salary-card,
+            .result-card {
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1px solid #e0e0e0;
+                background: white !important;
+            }
+
+            .info-item {
+                page-break-inside: avoid;
+            }
+
+            button {
+                display: none !important;
+            }
+
+            .collapse-toggle-btn {
+                display: none !important;
+            }
+
+            .collapsible-payments-section {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+        }
+
         .email-modal {
             position: fixed;
             top: 50%;
@@ -61,11 +213,12 @@
             z-index: 100;
             width: 90%;
             max-width: 500px;
-            background: white;
+            background: var(--card-light);
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             display: none;
         }
+
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -76,16 +229,29 @@
             z-index: 99;
             display: none;
         }
+
         .input-error {
             border-color: #f87171 !important;
             background-color: #fef2f2 !important;
         }
+
+        input,
+        textarea {
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
         .user-card {
-            background: linear-gradient(to right, #ffffff, #f9fafb);
+            background: linear-gradient(to right, var(--card-light), #f9fafb);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
         }
+
         .info-item {
             display: flex;
             justify-content: space-between;
@@ -93,15 +259,18 @@
             border-bottom: 1px solid #f1f5f9;
             transition: all 0.2s;
         }
+
         .info-item:hover {
             background-color: #f8fafc;
             transform: translateX(-2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
+
         .info-item.highlight-red .info-value {
             color: #dc2626 !important;
             font-weight: 700;
         }
+
         .info-label {
             color: #334155;
             font-weight: 600;
@@ -111,14 +280,16 @@
             align-items: center;
             gap: 8px;
         }
+
         .info-value {
-            color: #0f172a;
+            color: var(--text-light);
             font-weight: 700;
             text-align: left;
             flex: 1;
             direction: ltr;
             word-break: break-word;
         }
+
         .highlight-box {
             background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
             border-radius: 12px;
@@ -126,21 +297,7 @@
             margin-top: 20px;
             border-left: 4px solid #3b82f6;
         }
-        .section-title {
-            position: relative;
-            padding-right: 20px;
-            margin-bottom: 20px;
-        }
-        .section-title::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            bottom: -8px;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(to right, #3b82f6, #60a5fa);
-            border-radius: 3px;
-        }
+
         .success-badge {
             background: linear-gradient(to right, #10b981, #34d399);
             color: white;
@@ -151,7 +308,9 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            animation: slideDown 0.4s ease-out;
         }
+
         .loading-spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #3b82f6;
@@ -162,10 +321,16 @@
             display: inline-block;
             margin-right: 8px;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
+
         .payments-scroll {
             max-height: 300px;
             overflow-y: auto;
@@ -173,57 +338,64 @@
             border: 1px solid #e2e8f0;
             background-color: white;
         }
+
         .payments-scroll::-webkit-scrollbar {
             width: 8px;
         }
+
         .payments-scroll::-webkit-scrollbar-track {
             background: #f1f5f9;
             border-radius: 10px;
         }
+
         .payments-scroll::-webkit-scrollbar-thumb {
             background: #94a3b8;
             border-radius: 10px;
         }
+
         .payments-scroll::-webkit-scrollbar-thumb:hover {
             background: #64748b;
         }
 
-        /* تحسينات العرض على الشاشات الصغيرة */
         .salary-card {
-            background: white;
+            background: var(--card-light);
             border-radius: 16px;
             padding: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             margin-bottom: 16px;
+            transition: all 0.2s ease;
         }
-        
-        /* تثبيت قسم البيانات الأساسية */
+
+        .salary-card:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
         .basic-section-sticky {
             position: sticky;
             top: 0;
             z-index: 10;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
-        
-        /* قسم المدفوعات الإضافية مع تأثير الطي */
+
         .collapsible-payments-section {
             overflow: hidden;
             animation: slideDown 0.4s ease-out;
         }
-        
+
         .collapsible-payments-section.collapsed {
             animation: slideUp 0.4s ease-out;
             max-height: 0;
             opacity: 0;
             margin-bottom: 0;
+            padding: 0 16px;
         }
-        
+
         .collapse-toggle-btn {
             width: 100%;
-            background: white;
+            background: var(--card-light);
             border-radius: 16px;
             padding: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             margin-bottom: 16px;
             display: flex;
             justify-content: space-between;
@@ -236,21 +408,21 @@
             color: #1e3a8a;
             transition: all 0.3s ease;
         }
-        
+
         .collapse-toggle-btn:hover {
             background: #f8fafc;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
         }
-        
+
         .collapse-toggle-btn .toggle-icon {
             transition: transform 0.3s ease;
             color: #3b82f6;
         }
-        
+
         .collapse-toggle-btn.collapsed .toggle-icon {
             transform: rotate(-90deg);
         }
-        
+
         .payment-item {
             display: flex;
             justify-content: space-between;
@@ -258,14 +430,17 @@
             border-bottom: 1px solid #f1f5f9;
             flex-wrap: wrap;
         }
+
         .payment-item:last-child {
             border-bottom: none;
         }
+
         .amount {
             font-weight: bold;
             color: #0f172a;
             font-size: 0.95rem;
         }
+
         .total {
             margin-top: 12px;
             padding-top: 12px;
@@ -275,19 +450,11 @@
             font-size: 1.05rem;
             flex-wrap: wrap;
         }
+
         .total .amount {
             color: #1e40af;
         }
-        .badge {
-            display: inline-block;
-            padding: 2px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        .badge-green { background: #dcfce7; color: #166534; }
-        .badge-red { background: #fee2e2; color: #991b1b; }
-        .badge-blue { background: #dbeafe; color: #1e40af; }
+
         .section-header {
             font-size: 1.1rem;
             font-weight: 700;
@@ -297,54 +464,98 @@
             border-right: 4px solid #3b82f6;
         }
 
-        /* 📱 تنسيقات خاصة بالهواتف */
+        .data-clear-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #f59e0b;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 200;
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #3b82f6;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
         @media (max-width: 640px) {
             .info-item {
                 flex-direction: column;
                 align-items: flex-start;
                 padding: 12px 16px;
             }
+
             .info-label {
                 min-width: unset;
                 font-size: 0.9rem;
                 margin-bottom: 4px;
             }
+
             .info-value {
                 font-size: 0.95rem;
                 text-align: right;
                 width: 100%;
             }
+
             .payment-item {
                 flex-direction: column;
                 align-items: flex-start;
             }
+
             .payment-item .amount {
                 margin-top: 2px;
             }
+
             .total {
                 flex-direction: column;
                 align-items: flex-start;
             }
+
             .salary-card {
                 padding: 12px;
             }
+
             .section-header {
                 font-size: 1rem;
             }
+
             .container {
                 padding: 8px;
             }
+
             .highlight-box {
                 padding: 12px;
             }
+
             .collapse-toggle-btn {
                 padding: 12px;
                 font-size: 0.95rem;
             }
+
+            .data-clear-notification {
+                left: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
-<body class="text-slate-800">
+<body>
+    <a href="#main-content" class="skip-link">اذهب إلى المحتوى الرئيسي</a>
+
     <div class="container mx-auto max-w-4xl py-10 px-4">
         <header class="text-center mb-12">
             <h1 class="text-3xl font-bold text-blue-700 mb-3">
@@ -356,149 +567,156 @@
             </p>
         </header>
 
-        <main>
-        <div class="search-container bg-white mb-10">
-            <div class="bg-gradient-to-r from-blue-600 to-blue-700 py-5 px-6">
-                <h2 class="text-xl font-bold text-white flex items-center">
-                    <i class="fas fa-search mr-3" aria-hidden="true"></i>
-                    بيانات الموظف
-                </h2>
-            </div>
-            
-            <div class="p-6">
-                <form id="login-form" class="flex flex-col gap-5" novalidate>
-                    <div>
-                        <label for="email-input" class="block text-slate-700 mb-2 font-medium">
-                            <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
-                            البريد الإلكتروني
-                        </label>
-                        <input type="email" id="email-input" name="email" autocomplete="email"
-                            class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
-                            placeholder="ادخل البريد الإلكتروني..." required>
-                    </div>
-                    
-                    <div>
-                        <label for="national-id-input" class="block text-slate-700 mb-2 font-medium">
-                            <i class="fas fa-id-card mr-2 text-blue-500" aria-hidden="true"></i>
-                            الرقم القومي
-                        </label>
-                        <input type="text" inputmode="numeric" pattern="\d{14}" id="national-id-input" name="nationalId"
-                            class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
-                            placeholder="ادخل الرقم القومي (14 رقمًا)..." maxlength="14" required aria-describedby="nid-help">
-                        <p id="nid-help" class="text-sm text-slate-500 mt-1">يجب أن يتكون الرقم القومي من 14 رقمًا فقط</p>
-                    </div>
-                    
-                    <button type="submit" id="search-btn"
-                        class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg py-3 transition-all">
-                        <i class="fas fa-search mr-2" aria-hidden="true"></i>
-                        البحث
-                    </button>
-                </form>
-            </div>
-        </div>
+        <main id="main-content">
+            <div class="search-container bg-white mb-10">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 py-5 px-6">
+                    <h2 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-search mr-3" aria-hidden="true"></i>
+                        بيانات الموظف
+                    </h2>
+                </div>
 
-        <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;" aria-live="polite">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-blue-700 flex items-center">
-                    <i class="fas fa-user-circle mr-3" aria-hidden="true"></i>
-                    بيانات الموظف
-                </h2>
-                <div class="flex items-center gap-3">
-                    <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-search mr-2" aria-hidden="true"></i>بحث جديد
-                    </button>
-                    <div id="update-success" class="success-badge" style="display:none;" role="status" aria-live="polite">
-                        <i class="fas fa-check-circle" aria-hidden="true"></i>
-                        تم تحديث البيانات بنجاح
+                <div class="p-6">
+                    <form id="login-form" class="flex flex-col gap-5" novalidate>
+                        <div>
+                            <label for="email-input" class="block text-slate-700 mb-2 font-medium">
+                                <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
+                                البريد الإلكتروني
+                            </label>
+                            <input type="email" id="email-input" name="email" autocomplete="email"
+                                class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                                placeholder="ادخل البريد الإلكتروني..." required>
+                            <small class="text-slate-500 mt-1 block">سيتم حفظ البريد محليًا فقط</small>
+                        </div>
+
+                        <div>
+                            <label for="national-id-input" class="block text-slate-700 mb-2 font-medium">
+                                <i class="fas fa-id-card mr-2 text-blue-500" aria-hidden="true"></i>
+                                الرقم القومي
+                            </label>
+                            <input type="text" inputmode="numeric" pattern="\\d{14}" id="national-id-input" name="nationalId"
+                                class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                                placeholder="ادخل الرقم القومي (14 رقمًا)..." maxlength="14" required aria-describedby="nid-help">
+                            <p id="nid-help" class="text-sm text-slate-500 mt-1">يجب أن يتكون الرقم القومي من 14 رقمًا فقط</p>
+                        </div>
+
+                        <button type="submit" id="search-btn"
+                            class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3 transition-all duration-200">
+                            <i class="fas fa-search mr-2" aria-hidden="true"></i>
+                            البحث
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;" aria-live="polite">
+                <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+                    <h2 class="text-2xl font-bold text-blue-700 flex items-center">
+                        <i class="fas fa-user-circle mr-3" aria-hidden="true"></i>
+                        بيانات الموظف
+                    </h2>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <button id="print-btn" class="bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors print-hidden" title="اطبع البيانات">
+                            <i class="fas fa-print mr-2" aria-hidden="true"></i>طباعة
+                        </button>
+                        <button id="export-btn" class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors" title="حمل البيانات كـ CSV">
+                            <i class="fas fa-download mr-2" aria-hidden="true"></i>تحميل
+                        </button>
+                        <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-search mr-2" aria-hidden="true"></i>بحث جديد
+                        </button>
+                        <div id="update-success" class="success-badge" style="display:none;" role="status" aria-live="polite">
+                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                            تم تحديث البيانات بنجاح
+                        </div>
+                    </div>
+                </div>
+
+                <div id="user-data"></div>
+
+                <div class="highlight-box mt-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1" aria-hidden="true"></i>
+                        <div>
+                            <h3 class="font-bold text-blue-800">ملاحظات هامة</h3>
+                            <p class="text-slate-700 mt-2">
+                                • هذه البيانات غير رسمية <br>
+                                • ولا يعتد بها أمام أي جهة قانونية
+                            </p>
+                            <h4 class="font-bold text-blue-700 mt-4 mb-2">للتواصل مع الدعم الفني:</h4>
+                            <ul class="text-slate-700 space-y-1">
+                                <li>
+                                    <i class="fab fa-whatsapp text-green-500 w-5" aria-hidden="true"></i>
+                                    واتساب: <a href="https://wa.me/201009844479" class="text-blue-600 hover:underline">201009844479</a>
+                                </li>
+                                <li>
+                                    <i class="fas fa-phone text-blue-500 w-5" aria-hidden="true"></i>
+                                    اتصال مباشر: <a href="tel:+201009844479" class="text-blue-600 hover:underline">201009844479</a>
+                                </li>
+                                <li>
+                                    <i class="fas fa-envelope text-red-500 w-5" aria-hidden="true"></i>
+                                    بريد إلكتروني: <a href="mailto:refaat252@gmail.com" class="text-blue-600 hover:underline">refaat252@gmail.com</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div id="user-data" class="divide-y divide-slate-100"></div>
-            
-            <div class="highlight-box mt-6">
+
+            <div id="error-section" class="bg-red-50 border border-red-200 rounded-xl p-5 mt-6" style="display:none;" role="alert" aria-live="assertive">
                 <div class="flex items-start">
-                    <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1" aria-hidden="true"></i>
+                    <i class="fas fa-exclamation-circle text-red-500 text-2xl mt-1 mr-3" aria-hidden="true"></i>
                     <div>
-                        <h3 class="font-bold text-blue-800">ملاحظات هامة</h3>
-                        <p class="text-slate-700 mt-2">
-                            • هذه البيانات غير رسمية <br>
-                            • ولا يعتد بها أمام أي جهة قانونية
-                        </p>
-                        <h4 class="font-bold text-blue-700 mt-4 mb-2">للتواصل مع الدعم الفني:</h4>
-                        <ul class="text-slate-700 space-y-1">
-                            <li>
-                                <i class="fab fa-whatsapp text-green-500 w-5" aria-hidden="true"></i>
-                                واتساب: <a href="https://wa.me/201009844479" class="text-blue-600 hover:underline">201009844479</a>
-                            </li>
-                            <li>
-                                <i class="fas fa-phone text-blue-500 w-5" aria-hidden="true"></i>
-                                اتصال مباشر: <a href="tel:+201009844479" class="text-blue-600 hover:underline">201009844479</a>
-                            </li>
-                            <li>
-                                <i class="fas fa-envelope text-red-500 w-5" aria-hidden="true"></i>
-                                بريد إلكتروني: <a href="mailto:refaat252@gmail.com" class="text-blue-600 hover:underline">refaat252@gmail.com</a>
-                            </li>
-                        </ul>
+                        <h3 class="font-bold text-red-700 text-lg">خطأ في عملية البحث</h3>
+                        <p id="error-message" class="text-red-600 mt-1">حدث خطأ أثناء عملية البحث. الرجاء المحاولة مرة أخرى.</p>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div id="error-section" class="bg-red-50 border border-red-200 rounded-xl p-5 mt-6" style="display:none;" role="alert" aria-live="assertive">
-            <div class="flex items-start">
-                <i class="fas fa-exclamation-circle text-red-500 text-2xl mt-1 mr-3" aria-hidden="true"></i>
-                <div>
-                    <h3 class="font-bold text-red-700 text-lg">خطأ في عملية البحث</h3>
-                    <p id="error-message" class="text-red-600 mt-1">حدث خطأ أثناء عملية البحث. الرجاء المحاولة مرة أخرى.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div id="instructions-section" class="bg-blue-50 rounded-2xl p-6 mt-10">
-            <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
-                <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
-                تعليمات الاستخدام
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-start">
-                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                        <i class="fas fa-id-card text-blue-600" aria-hidden="true"></i>
+
+            <div id="instructions-section" class="bg-blue-50 rounded-2xl p-6 mt-10">
+                <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
+                    <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
+                    تعليمات الاستخدام
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-id-card text-blue-600" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">الرقم القومي</h4>
+                            <p class="text-slate-700 text-sm mt-1">يجب إدخال 14 رقمًا فقط دون أي أحرف أو رموز</p>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800">الرقم القومي</h4>
-                        <p class="text-slate-700 text-sm mt-1">يجب إدخال 14 رقمًا فقط دون أي أحرف أو رموز</p>
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-at text-blue-600" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">البريد الإلكتروني</h4>
+                            <p class="text-slate-700 text-sm mt-1">يجب أن يكون البريد الإلكتروني بتنسيق صحيح مثل example@domain.com</p>
+                        </div>
                     </div>
-                </div>
-                <div class="flex items-start">
-                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                        <i class="fas fa-at text-blue-600" aria-hidden="true"></i>
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-sync-alt text-blue-600" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">تحديث البيانات</h4>
+                            <p class="text-slate-700 text-sm mt-1">يمكنك تحديث البريد الإلكتروني إذا لم يكن مرتبطًا بالرقم القومي</p>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800">البريد الإلكتروني</h4>
-                        <p class="text-slate-700 text-sm mt-1">يجب أن يكون البريد الإلكتروني بتنسيق صحيح مثل example@domain.com</p>
-                    </div>
-                </div>
-                <div class="flex items-start">
-                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                        <i class="fas fa-sync-alt text-blue-600" aria-hidden="true"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800">تحديث البيانات</h4>
-                        <p class="text-slate-700 text-sm mt-1">يمكنك تحديث البريد الإلكتروني إذا لم يكن مرتبطًا بالرقم القومي</p>
-                    </div>
-                </div>
-                <div class="flex items-start">
-                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                        <i class="fas fa-shield-alt text-blue-600" aria-hidden="true"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800">الأمان والخصوصية</h4>
-                        <p class="text-slate-700 text-sm mt-1">جميع البيانات محمية ولا يتم مشاركتها مع أي جهات خارجية</p>
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-shield-alt text-blue-600" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">الأمان والخصوصية</h4>
+                            <p class="text-slate-700 text-sm mt-1">جميع البيانات محمية ولا يتم مشاركتها مع أي جهات خارجية</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </main>
     </div>
 
@@ -515,7 +733,7 @@
                     <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
-            
+
             <div class="mb-4 bg-blue-50 rounded-lg p-4">
                 <div class="flex items-center">
                     <i class="fas fa-info-circle text-blue-500 mr-2" aria-hidden="true"></i>
@@ -525,7 +743,7 @@
                 </div>
                 <p id="modal-message" class="text-slate-700 mt-2">يمكنك إضافة أو تحديث البريد الإلكتروني لهذا الحساب.</p>
             </div>
-            
+
             <form id="email-form" novalidate>
                 <div class="mb-4">
                     <label for="new-email-input" class="block text-slate-700 mb-2 font-medium">
@@ -540,7 +758,7 @@
                         <span id="email-error-message"></span>
                     </div>
                 </div>
-                
+
                 <div class="mb-4">
                     <label for="confirm-email-input" class="block text-slate-700 mb-2 font-medium">
                         <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
@@ -550,12 +768,12 @@
                         class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
                         placeholder="أعد إدخال البريد الإلكتروني" required>
                 </div>
-                
+
                 <div class="flex gap-3 mt-6">
-                    <button type="button" id="cancel-email-btn" class="flex-1 text-slate-700 bg-slate-200 hover:bg-slate-300 font-medium rounded-xl text-lg px-6 py-3">
+                    <button type="button" id="cancel-email-btn" class="flex-1 text-slate-700 bg-slate-200 hover:bg-slate-300 font-medium rounded-xl text-lg px-6 py-3 transition-colors">
                         إلغاء
                     </button>
-                    <button type="submit" id="save-email-btn" class="flex-1 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-xl text-lg px-6 py-3">
+                    <button type="submit" id="save-email-btn" class="flex-1 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-xl text-lg px-6 py-3 transition-all duration-200">
                         حفظ البريد
                     </button>
                 </div>
@@ -571,438 +789,518 @@
     </template>
 
     <script type="module">
-    import { CONFIG } from './config.js';
+        import { CONFIG } from './config.js';
 
-    // ====================================================
-    //  الأدوات المساعدة
-    // ====================================================
+        let currentUser = null;
+        let isPaymentsExpanded = true;
+        let autoClearTimer = null;
+        const AUTO_CLEAR_TIMEOUT = 30 * 60 * 1000;
 
-    let currentUser = null;
-    let isPaymentsExpanded = true;
-
-    function escapeHTML(str) {
-        if (str === null || str === undefined) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    function normalizeKey(k) {
-        return k ? k.toString().trim().normalize('NFKC') : '';
-    }
-
-    function fetchWithTimeout(resource, options = {}) {
-        const { timeout = 10000 } = options;
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), timeout);
-        return fetch(resource, { ...options, signal: controller.signal })
-            .finally(() => clearTimeout(id));
-    }
-
-    function formatCurrency(value) {
-        if (value === null || value === undefined || value === '') return '—';
-        const num = parseFloat(value);
-        if (isNaN(num)) return String(value);
-        return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ج.م';
-    }
-
-    function formatNumber(value) {
-        if (value === null || value === undefined || value === '') return '—';
-        const num = parseFloat(value);
-        if (isNaN(num)) return String(value);
-        return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
-
-    // ====================================================
-    //  وظائف البحث والتحديث
-    // ====================================================
-
-    async function searchUser(nationalId, email) {
-        try {
-            const url = `${CONFIG.API_URL}?key=${CONFIG.API_KEY}&nationalId=${encodeURIComponent(nationalId)}`;
-            const response = await fetchWithTimeout(url, { timeout: 10000 });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const result = await response.json();
-            if (result.success) {
-                const registeredEmail = (result.data['البريد'] || '').trim();
-                if (registeredEmail && registeredEmail.toLowerCase() === email.toLowerCase()) {
-                    return { user: result.data, message: 'تم العثور على المستخدم' };
-                } else if (!registeredEmail) {
-                    return { user: result.data, message: 'البريد غير مسجل', requiresUpdate: true };
-                } else {
-                    return { user: null, message: 'البريد الإلكتروني المدخل غير متطابق مع البريد المسجل' };
-                }
-            } else {
-                return { user: null, message: result.message || 'لم يتم العثور على المستخدم' };
-            }
-        } catch (error) {
-            console.error('Search failed:', error);
-            return { user: null, message: 'فشل الاتصال بالخادم: ' + error.message };
-        }
-    }
-
-    async function updateUserEmail(nationalId, newEmail) {
-        try {
-            const response = await fetchWithTimeout(CONFIG.API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    key: CONFIG.API_KEY,
-                    nationalId: nationalId,
-                    email: newEmail
-                }),
-                timeout: 10000
-            });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const result = await response.json();
-            if (result.success) {
-                return { success: true, message: result.message || 'تم التحديث بنجاح' };
-            } else {
-                return { success: false, message: result.error || 'فشل التحديث' };
-            }
-        } catch (error) {
-            console.error('Update failed:', error);
-            return { success: false, message: 'فشل الاتصال بالخادم: ' + error.message };
-        }
-    }
-
-    // ====================================================
-    //  دوال العرض المحسنة
-    // ====================================================
-
-    function makeInfoRow(label, value, iconClass, isCurrency = false) {
-        const tpl = document.getElementById('info-row-template');
-        const clone = tpl.content.cloneNode(true);
-        const labelEl = clone.querySelector('.info-label');
-        const valueEl = clone.querySelector('.info-value');
-        const infoItem = clone.querySelector('.info-item');
-
-        const safeValue = (value !== null && value !== undefined) ? String(value) : '';
-
-        if (safeValue && safeValue.includes('متأخرات')) {
-            infoItem.classList.add('highlight-red');
+        function scheduleDataClear() {
+            if (autoClearTimer) clearTimeout(autoClearTimer);
+            autoClearTimer = setTimeout(() => {
+                clearAllData();
+                showDataClearNotification();
+            }, AUTO_CLEAR_TIMEOUT);
         }
 
-        if (iconClass) {
-            const icon = document.createElement('i');
-            icon.className = `fas ${iconClass} ml-2 text-blue-500`;
-            icon.setAttribute('aria-hidden', 'true');
-            labelEl.appendChild(icon);
+        function clearAllData() {
+            currentUser = null;
+            document.getElementById('email-input').value = '';
+            document.getElementById('national-id-input').value = '';
+            document.getElementById('result-section').style.display = 'none';
+            document.querySelector('.search-container').style.display = 'block';
+            document.getElementById('instructions-section').style.display = 'block';
+            try {
+                localStorage.removeItem('payroll_search_cache');
+            } catch (e) { /* ignore */ }
         }
 
-        labelEl.appendChild(document.createTextNode(label));
-
-        if (isCurrency && safeValue !== '—') {
-            valueEl.textContent = formatCurrency(safeValue);
-        } else {
-            valueEl.textContent = safeValue;
-        }
-
-        return clone;
-    }
-
-    function clearElement(el) {
-        while (el.firstChild) el.removeChild(el.firstChild);
-    }
-
-    function togglePaymentSection() {
-        const paymentSection = document.getElementById('payments-section');
-        const toggleBtn = document.getElementById('payments-toggle-btn');
-        
-        isPaymentsExpanded = !isPaymentsExpanded;
-        
-        if (isPaymentsExpanded) {
-            paymentSection.classList.remove('collapsed');
-            toggleBtn.classList.remove('collapsed');
-        } else {
-            paymentSection.classList.add('collapsed');
-            toggleBtn.classList.add('collapsed');
-        }
-    }
-
-    // ✅ دالة العرض المحسنة مع تثبيت قسم الأساسية وطي المدفوعات
-    function showResult(user) {
-        document.querySelector('.search-container').style.display = 'none';
-        document.getElementById('instructions-section').style.display = 'none';
-        document.getElementById('error-section').style.display = 'none';
-        document.getElementById('result-section').style.display = 'block';
-
-        const container = document.getElementById('user-data');
-        clearElement(container);
-
-        // ========== القسم الأول: المعلومات الأساسية (STICKY) ==========
-        const basicSection = document.createElement('div');
-        basicSection.className = 'salary-card basic-section-sticky';
-        const basicTitle = document.createElement('h3');
-        basicTitle.className = 'section-header';
-        basicTitle.innerHTML = '<i class="fas fa-user-circle ml-2"></i> المعلومات الأساسية';
-        basicSection.appendChild(basicTitle);
-
-        const basicFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر'];
-        basicFields.forEach(key => {
-            let value = user[normalizeKey(key)];
-            if (!value && key === 'عدد التذاكر') {
-                value = user['عدد التذاكر'] || user['عدد_التذاكر'] || user['تذاكر'] || '';
-            }
-            if (value) {
-                const isCurrency = false;
-                const row = makeInfoRow(key, value, 'fa-info-circle', isCurrency);
-                basicSection.appendChild(row);
-            }
-        });
-        container.appendChild(basicSection);
-
-        // ========== القسم الثاني: الراتب ==========
-        const salarySection = document.createElement('div');
-        salarySection.className = 'salary-card';
-        const salaryTitle = document.createElement('h3');
-        salaryTitle.className = 'section-header';
-        salaryTitle.innerHTML = '<i class="fas fa-money-bill-wave ml-2"></i> الراتب';
-        salarySection.appendChild(salaryTitle);
-
-        const salaryFields = ['اساسى 30/6', 'اساسى يوليو 2025'];
-        salaryFields.forEach(key => {
-            let value = user[normalizeKey(key)];
-            if (!value && key === 'اساسى 30/6') {
-                value = user['اساسى 2014'] || user[normalizeKey('اساسى 2014')];
-            }
-            if (value) {
-                const row = makeInfoRow(key, value, 'fa-coins', true);
-                salarySection.appendChild(row);
-            }
-        });
-        container.appendChild(salarySection);
-
-        // ========== القسم الثالث: المدفوعات الإضافية (COLLAPSIBLE) ==========
-        
-        // زر الطي
-        const toggleBtn = document.createElement('button');
-        toggleBtn.id = 'payments-toggle-btn';
-        toggleBtn.className = 'collapse-toggle-btn';
-        toggleBtn.type = 'button';
-        toggleBtn.innerHTML = `
-            <div class="flex items-center">
-                <i class="fas fa-list-ul ml-2" aria-hidden="true"></i>
-                <span>المدفوعات الإضافية</span>
-            </div>
-            <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
-        `;
-        toggleBtn.addEventListener('click', togglePaymentSection);
-        container.appendChild(toggleBtn);
-
-        // قسم المدفوعات
-        const paymentsSection = document.createElement('div');
-        paymentsSection.id = 'payments-section';
-        paymentsSection.className = 'collapsible-payments-section salary-card';
-
-        const excludeFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر', 'اساسى 30/6', 'اساسى يوليو 2025', 'البريد'];
-        let totalPayments = 0;
-        let hasPayments = false;
-
-        const paymentList = document.createElement('div');
-        paymentList.className = 'divide-y divide-slate-100';
-
-        Object.keys(user).forEach(key => {
-            const normalized = normalizeKey(key);
-            if (!excludeFields.some(f => normalizeKey(f) === normalized)) {
-                const value = user[key];
-                if (value) {
-                    hasPayments = true;
-                    const numValue = parseFloat(value);
-                    if (!isNaN(numValue)) {
-                        totalPayments += numValue;
-                    }
-                    const row = document.createElement('div');
-                    row.className = 'payment-item';
-                    row.innerHTML = `
-                        <span class="font-medium text-slate-700">${key}</span>
-                        <span class="amount">${formatCurrency(value)}</span>
-                    `;
-                    paymentList.appendChild(row);
-                }
-            }
-        });
-
-        if (hasPayments) {
-            paymentsSection.appendChild(paymentList);
-            const totalRow = document.createElement('div');
-            totalRow.className = 'total';
-            totalRow.innerHTML = `
-                <strong>الإجمالي:</strong>
-                <strong class="amount">${formatCurrency(totalPayments)}</strong>
+        function showDataClearNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'data-clear-notification';
+            notification.innerHTML = `
+                <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
+                تم مسح البيانات تلقائيًا لأغراض الأمان
             `;
-            paymentsSection.appendChild(totalRow);
-        } else {
-            const emptyMsg = document.createElement('p');
-            emptyMsg.className = 'text-slate-500 text-center py-4';
-            emptyMsg.textContent = 'لا توجد مدفوعات إضافية مسجلة.';
-            paymentsSection.appendChild(emptyMsg);
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
         }
 
-        container.appendChild(paymentsSection);
-
-        // إعادة تعيين حالة الطي
-        isPaymentsExpanded = true;
-    }
-
-    // ====================================================
-    //  باقي دوال الواجهة (نافذة البريد، الأحداث، إلخ)
-    // ====================================================
-
-    function showError(message) {
-        document.querySelector('.search-container').style.display = 'block';
-        document.getElementById('instructions-section').style.display = 'block';
-        document.getElementById('result-section').style.display = 'none';
-        const err = document.getElementById('error-section');
-        document.getElementById('error-message').textContent = message;
-        err.style.display = 'block';
-    }
-
-    function openEmailModal(nationalId, hasEmail, prefilledEmail = '') {
-        const modal = document.getElementById('email-modal');
-        document.getElementById('user-national-id').textContent = nationalId;
-        const messageEl = document.getElementById('modal-message');
-        if (hasEmail) {
-            messageEl.textContent = 'تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.';
-        } else {
-            messageEl.textContent = 'لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال البريد الإلكتروني.';
-        }
-        document.getElementById('new-email-input').value = prefilledEmail || '';
-        document.getElementById('confirm-email-input').value = '';
-        document.getElementById('email-modal-overlay').style.display = 'block';
-        modal.style.display = 'block';
-        document.getElementById('new-email-input').focus();
-    }
-
-    function closeEmailModal() {
-        const modal = document.getElementById('email-modal');
-        modal.style.display = 'none';
-        document.getElementById('email-modal-overlay').style.display = 'none';
-        document.getElementById('new-email-input').value = '';
-        document.getElementById('confirm-email-input').value = '';
-        document.getElementById('email-error').classList.add('hidden');
-        document.getElementById('email-input').focus();
-    }
-
-    // ====================================================
-    //  ربط الأحداث
-    // ====================================================
-
-    document.getElementById('new-search-btn').addEventListener('click', function() {
-        document.querySelector('.search-container').style.display = 'block';
-        document.getElementById('result-section').style.display = 'none';
-        document.getElementById('instructions-section').style.display = 'block';
-        document.getElementById('email-input').value = '';
-        document.getElementById('national-id-input').value = '';
-        document.getElementById('email-input').focus();
-    });
-
-    document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
-    document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
-    document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const modal = document.getElementById('email-modal');
-            if (modal && modal.style.display === 'block') closeEmailModal();
-        }
-    });
-
-    document.getElementById('login-form').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const email = document.getElementById('email-input').value.trim();
-        const nationalId = document.getElementById('national-id-input').value.trim();
-        
-        document.getElementById('email-input').classList.remove('input-error');
-        document.getElementById('national-id-input').classList.remove('input-error');
-        document.getElementById('error-section').style.display = 'none';
-        document.getElementById('result-section').style.display = 'none';
-        document.getElementById('update-success').style.display = 'none';
-
-        if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
-            showError('الرقم القومي يجب أن يتكون من 14 رقمًا فقط.');
-            document.getElementById('national-id-input').classList.add('input-error');
-            return;
-        }
-        
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            showError('صيغة البريد الإلكتروني غير صحيحة.');
-            document.getElementById('email-input').classList.add('input-error');
-            return;
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
 
-        const btn = document.getElementById('search-btn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري البحث...';
+        function normalizeKey(k) {
+            return k ? k.toString().trim().normalize('NFKC') : '';
+        }
 
-        const result = await searchUser(nationalId, email);
+        function fetchWithTimeout(resource, options = {}) {
+            const { timeout = 10000 } = options;
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeout);
+            return fetch(resource, { ...options, signal: controller.signal })
+                .finally(() => clearTimeout(id));
+        }
 
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-search mr-2" aria-hidden="true"></i> البحث';
+        function formatCurrency(value) {
+            if (value === null || value === undefined || value === '') return '—';
+            const num = parseFloat(value);
+            if (isNaN(num)) return String(value);
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ج.م';
+        }
 
-        if (result.user) {
-            currentUser = result.user;
-            if (result.requiresUpdate) {
-                openEmailModal(nationalId, false, email);
-            } else {
-                showResult(result.user);
+        function formatNumber(value) {
+            if (value === null || value === undefined || value === '') return '—';
+            const num = parseFloat(value);
+            if (isNaN(num)) return String(value);
+            return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        const CACHE_KEY = 'payroll_search_cache';
+        const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
+
+        function getCachedResult(nationalId) {
+            try {
+                const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+                const cached = cache[nationalId];
+                if (cached && Date.now() - cached.timestamp < CACHE_EXPIRY) {
+                    return cached.data;
+                } else if (cached) {
+                    delete cache[nationalId];
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+                }
+            } catch (e) {
+                console.error('Cache read error:', e);
             }
-        } else {
-            showError(result.message);
-        }
-    });
-
-    document.getElementById('email-form').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const email = document.getElementById('new-email-input').value.trim();
-        const confirmEmail = document.getElementById('confirm-email-input').value.trim();
-        const errorElement = document.getElementById('email-error');
-        const nationalId = document.getElementById('user-national-id').textContent;
-        
-        errorElement.classList.add('hidden');
-        
-        if (email !== confirmEmail) {
-            document.getElementById('email-error-message').textContent = 'البريد الإلكتروني وتأكيده غير متطابقين.';
-            errorElement.classList.remove('hidden');
-            return;
-        }
-        
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            document.getElementById('email-error-message').textContent = 'صيغة البريد الإلكتروني غير صحيحة.';
-            errorElement.classList.remove('hidden');
-            return;
+            return null;
         }
 
-        const saveBtn = document.getElementById('save-email-btn');
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري الحفظ...';
-
-        const updateResult = await updateUserEmail(nationalId, email);
-
-        saveBtn.disabled = false;
-        saveBtn.innerHTML = 'حفظ البريد';
-
-        if (updateResult.success) {
-            if (currentUser) currentUser['البريد'] = email;
-            closeEmailModal();
-            showResult(currentUser);
-            const success = document.getElementById('update-success');
-            success.style.display = 'flex';
-            setTimeout(() => success.style.display = 'none', 5000);
-        } else {
-            document.getElementById('email-error-message').textContent = updateResult.message;
-            errorElement.classList.remove('hidden');
+        function cacheResult(nationalId, data) {
+            try {
+                const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+                cache[nationalId] = { data, timestamp: Date.now() };
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+            } catch (e) {
+                console.error('Cache write error:', e);
+            }
         }
-    });
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('email-input').focus();
-    });
+        async function searchUser(nationalId, email) {
+            try {
+                const cached = getCachedResult(nationalId);
+                let result = null;
+
+                if (cached) {
+                    result = cached;
+                    console.log('[Cache] استخدام البيانات المحفوظة');
+                } else {
+                    const url =
+                        `${CONFIG.API_URL}?key=${CONFIG.API_KEY}&nationalId=${encodeURIComponent(nationalId)}`;
+                    const response = await fetchWithTimeout(url, { timeout: 10000 });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    result = await response.json();
+                    if (result.success) cacheResult(nationalId, result);
+                }
+
+                if (result.success) {
+                    const registeredEmail = (result.data['البريد'] || '').trim();
+                    if (registeredEmail && registeredEmail.toLowerCase() === email.toLowerCase()) {
+                        scheduleDataClear();
+                        return { user: result.data, message: 'تم العثور على المستخدم' };
+                    } else if (!registeredEmail) {
+                        scheduleDataClear();
+                        return { user: result.data, message: 'البريد غير مسجل', requiresUpdate: true };
+                    } else {
+                        return { user: null, message: 'البريد الإلكتروني المدخل غير متطابق مع البريد المسجل' };
+                    }
+                } else {
+                    return { user: null, message: result.message || 'لم يتم العثور على المستخدم' };
+                }
+            } catch (error) {
+                console.error('Search failed:', error);
+                return { user: null, message: 'فشل الاتصال بالخادم: ' + error.message };
+            }
+        }
+
+        async function updateUserEmail(nationalId, newEmail) {
+            try {
+                const response = await fetchWithTimeout(CONFIG.API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        key: CONFIG.API_KEY,
+                        nationalId: nationalId,
+                        email: newEmail
+                    }),
+                    timeout: 10000
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const result = await response.json();
+                if (result.success) {
+                    try {
+                        const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+                        delete cache[nationalId];
+                        localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+                    } catch (e) {
+                        console.error('Cache clear error:', e);
+                    }
+                    return { success: true, message: result.message || 'تم التحديث بنجاح' };
+                } else {
+                    return { success: false, message: result.error || 'فشل التحديث' };
+                }
+            } catch (error) {
+                console.error('Update failed:', error);
+                return { success: false, message: 'فشل الاتصال بالخادم: ' + error.message };
+            }
+        }
+
+        function makeInfoRow(label, value, iconClass, isCurrency = false) {
+            const tpl = document.getElementById('info-row-template');
+            const clone = tpl.content.cloneNode(true);
+            const labelEl = clone.querySelector('.info-label');
+            const valueEl = clone.querySelector('.info-value');
+            const infoItem = clone.querySelector('.info-item');
+
+            const safeValue = (value !== null && value !== undefined) ? String(value) : '';
+
+            if (safeValue && safeValue.includes('متأخرات')) {
+                infoItem.classList.add('highlight-red');
+            }
+
+            if (iconClass) {
+                const icon = document.createElement('i');
+                icon.className = `fas ${iconClass} ml-2 text-blue-500`;
+                icon.setAttribute('aria-hidden', 'true');
+                labelEl.appendChild(icon);
+            }
+
+            labelEl.appendChild(document.createTextNode(label));
+
+            if (isCurrency && safeValue !== '—') {
+                valueEl.textContent = formatCurrency(safeValue);
+            } else {
+                valueEl.textContent = safeValue;
+            }
+
+            return clone;
+        }
+
+        function clearElement(el) {
+            while (el.firstChild) el.removeChild(el.firstChild);
+        }
+
+        function togglePaymentSection() {
+            const paymentSection = document.getElementById('payments-section');
+            const toggleBtn = document.getElementById('payments-toggle-btn');
+            isPaymentsExpanded = !isPaymentsExpanded;
+
+            if (isPaymentsExpanded) {
+                paymentSection.classList.remove('collapsed');
+                toggleBtn.classList.remove('collapsed');
+            } else {
+                paymentSection.classList.add('collapsed');
+                toggleBtn.classList.add('collapsed');
+            }
+        }
+
+        function exportToCSV() {
+            if (!currentUser) return;
+            let csv = 'الحقل,القيمة\n';
+            Object.entries(currentUser).forEach(([key, value]) => {
+                const escapedValue = String(value).replace(/"/g, '""');
+                csv += `"${key}","${escapedValue}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download =
+                `موظف_${currentUser['الرقم القومى'] || 'بيانات'}_${new Date().toLocaleDateString('ar-EG')}.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function showResult(user) {
+            document.querySelector('.search-container').style.display = 'none';
+            document.getElementById('instructions-section').style.display = 'none';
+            document.getElementById('error-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+            document.getElementById('result-section').style.animation = 'slideInUp 0.4s ease-out';
+
+            const container = document.getElementById('user-data');
+            clearElement(container);
+
+            // الأساسية
+            const basicSection = document.createElement('div');
+            basicSection.className = 'salary-card basic-section-sticky';
+            const basicTitle = document.createElement('h3');
+            basicTitle.className = 'section-header';
+            basicTitle.innerHTML = '<i class="fas fa-user-circle ml-2"></i> المعلومات الأساسية';
+            basicSection.appendChild(basicTitle);
+
+            const basicFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر'];
+            basicFields.forEach(key => {
+                let value = user[normalizeKey(key)];
+                if (!value && key === 'عدد التذاكر') {
+                    value = user['عدد التذاكر'] || user['عدد_التذاكر'] || user['تذاكر'] || '';
+                }
+                if (value) {
+                    const row = makeInfoRow(key, value, 'fa-info-circle', false);
+                    basicSection.appendChild(row);
+                }
+            });
+            container.appendChild(basicSection);
+
+            // الراتب
+            const salarySection = document.createElement('div');
+            salarySection.className = 'salary-card';
+            const salaryTitle = document.createElement('h3');
+            salaryTitle.className = 'section-header';
+            salaryTitle.innerHTML = '<i class="fas fa-money-bill-wave ml-2"></i> الراتب';
+            salarySection.appendChild(salaryTitle);
+
+            const salaryFields = ['اساسى 30/6', 'اساسى يوليو 2025'];
+            salaryFields.forEach(key => {
+                let value = user[normalizeKey(key)];
+                if (!value && key === 'اساسى 30/6') {
+                    value = user['اساسى 2014'] || user[normalizeKey('اساسى 2014')];
+                }
+                if (value) {
+                    const row = makeInfoRow(key, value, 'fa-coins', true);
+                    salarySection.appendChild(row);
+                }
+            });
+            container.appendChild(salarySection);
+
+            // زر طي المدفوعات
+            const toggleBtn = document.createElement('button');
+            toggleBtn.id = 'payments-toggle-btn';
+            toggleBtn.className = 'collapse-toggle-btn';
+            toggleBtn.type = 'button';
+            toggleBtn.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-list-ul ml-2" aria-hidden="true"></i>
+                    <span>المدفوعات الإضافية</span>
+                </div>
+                <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
+            `;
+            toggleBtn.addEventListener('click', togglePaymentSection);
+            container.appendChild(toggleBtn);
+
+            // المدفوعات
+            const paymentsSection = document.createElement('div');
+            paymentsSection.id = 'payments-section';
+            paymentsSection.className = 'collapsible-payments-section salary-card';
+
+            const excludeFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر', 'اساسى 30/6',
+                'اساسى يوليو 2025', 'البريد'
+            ];
+            let totalPayments = 0;
+            let hasPayments = false;
+
+            const paymentList = document.createElement('div');
+            paymentList.className = 'divide-y divide-slate-100';
+
+            Object.keys(user).forEach(key => {
+                const normalized = normalizeKey(key);
+                if (!excludeFields.some(f => normalizeKey(f) === normalized)) {
+                    const value = user[key];
+                    if (value) {
+                        hasPayments = true;
+                        const numValue = parseFloat(value);
+                        if (!isNaN(numValue)) totalPayments += numValue;
+                        const row = document.createElement('div');
+                        row.className = 'payment-item';
+                        row.innerHTML = `
+                            <span class="font-medium text-slate-700">${escapeHTML(key)}</span>
+                            <span class="amount">${formatCurrency(value)}</span>
+                        `;
+                        paymentList.appendChild(row);
+                    }
+                }
+            });
+
+            if (hasPayments) {
+                paymentsSection.appendChild(paymentList);
+                const totalRow = document.createElement('div');
+                totalRow.className = 'total';
+                totalRow.innerHTML = `
+                    <strong>الإجمالي:</strong>
+                    <strong class="amount">${formatCurrency(totalPayments)}</strong>
+                `;
+                paymentsSection.appendChild(totalRow);
+            } else {
+                const emptyMsg = document.createElement('p');
+                emptyMsg.className = 'text-slate-500 text-center py-4';
+                emptyMsg.textContent = 'لا توجد مدفوعات إضافية مسجلة.';
+                paymentsSection.appendChild(emptyMsg);
+            }
+
+            container.appendChild(paymentsSection);
+            isPaymentsExpanded = true;
+        }
+
+        function showError(message) {
+            document.querySelector('.search-container').style.display = 'block';
+            document.getElementById('instructions-section').style.display = 'block';
+            document.getElementById('result-section').style.display = 'none';
+            const err = document.getElementById('error-section');
+            document.getElementById('error-message').textContent = message;
+            err.style.display = 'block';
+        }
+
+        function openEmailModal(nationalId, hasEmail, prefilledEmail = '') {
+            const modal = document.getElementById('email-modal');
+            document.getElementById('user-national-id').textContent = nationalId;
+            const messageEl = document.getElementById('modal-message');
+            if (hasEmail) {
+                messageEl.textContent = 'تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.';
+            } else {
+                messageEl.textContent = 'لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال البريد الإلكتروني.';
+            }
+            document.getElementById('new-email-input').value = prefilledEmail || '';
+            document.getElementById('confirm-email-input').value = '';
+            document.getElementById('email-modal-overlay').style.display = 'block';
+            modal.style.display = 'block';
+            document.getElementById('new-email-input').focus();
+        }
+
+        function closeEmailModal() {
+            const modal = document.getElementById('email-modal');
+            modal.style.display = 'none';
+            document.getElementById('email-modal-overlay').style.display = 'none';
+            document.getElementById('new-email-input').value = '';
+            document.getElementById('confirm-email-input').value = '';
+            document.getElementById('email-error').classList.add('hidden');
+            document.getElementById('email-input').focus();
+        }
+
+        // Events
+        document.getElementById('new-search-btn').addEventListener('click', () => {
+            clearAllData();
+            document.getElementById('email-input').focus();
+        });
+
+        document.getElementById('print-btn')?.addEventListener('click', () => window.print());
+        document.getElementById('export-btn')?.addEventListener('click', exportToCSV);
+        document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
+        document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
+        document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('email-modal');
+                if (modal && modal.style.display === 'block') closeEmailModal();
+            }
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email-input').value.trim();
+            const nationalId = document.getElementById('national-id-input').value.trim();
+
+            document.getElementById('email-input').classList.remove('input-error');
+            document.getElementById('national-id-input').classList.remove('input-error');
+            document.getElementById('error-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'none';
+            document.getElementById('update-success').style.display = 'none';
+
+            if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
+                showError('الرقم القومي يجب أن يتكون من 14 رقمًا فقط.');
+                document.getElementById('national-id-input').classList.add('input-error');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('صيغة البريد الإلكتروني غير صحيحة.');
+                document.getElementById('email-input').classList.add('input-error');
+                return;
+            }
+
+            const btn = document.getElementById('search-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري البحث...';
+
+            const result = await searchUser(nationalId, email);
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-search mr-2" aria-hidden="true"></i> البحث';
+
+            if (result.user) {
+                currentUser = result.user;
+                if (result.requiresUpdate) {
+                    openEmailModal(nationalId, false, email);
+                } else {
+                    showResult(result.user);
+                }
+            } else {
+                showError(result.message);
+            }
+        });
+
+        document.getElementById('email-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('new-email-input').value.trim();
+            const confirmEmail = document.getElementById('confirm-email-input').value.trim();
+            const errorElement = document.getElementById('email-error');
+            const nationalId = document.getElementById('user-national-id').textContent;
+
+            errorElement.classList.add('hidden');
+
+            if (email !== confirmEmail) {
+                document.getElementById('email-error-message').textContent = 'البريد الإلكتروني وتأكيده غير متطابقين.';
+                errorElement.classList.remove('hidden');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('email-error-message').textContent = 'صيغة البريد الإلكتروني غير صحيحة.';
+                errorElement.classList.remove('hidden');
+                return;
+            }
+
+            const saveBtn = document.getElementById('save-email-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري الحفظ...';
+
+            const updateResult = await updateUserEmail(nationalId, email);
+
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = 'حفظ البريد';
+
+            if (updateResult.success) {
+                if (currentUser) currentUser['البريد'] = email;
+                closeEmailModal();
+                showResult(currentUser);
+                const success = document.getElementById('update-success');
+                success.style.display = 'flex';
+                setTimeout(() => success.style.display = 'none', 5000);
+            } else {
+                document.getElementById('email-error-message').textContent = updateResult.message;
+                errorElement.classList.remove('hidden');
+            }
+        });
+
+        // استعادة آخر بريد
+        try {
+            const lastEmail = localStorage.getItem('last_used_email');
+            if (lastEmail) document.getElementById('email-input').value = lastEmail;
+        } catch (e) { /* ignore */ }
+
+        document.getElementById('login-form').addEventListener('submit', function() {
+            try {
+                localStorage.setItem('last_used_email', document.getElementById('email-input').value.trim());
+            } catch (e) { /* ignore */ }
+        });
     </script>
 </body>
 </html>
