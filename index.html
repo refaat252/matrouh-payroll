@@ -1,69 +1,753 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام مرتبات معلمي مطروح</title>
+    <title>إدارة النجيلة التعليمية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 20px; background: #eef2f5; }
-        .container { max-width: 1300px; margin: auto; background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #1e466e; }
-        .ad-space { background: #f8f9fa; border: 1px dashed #ccc; text-align: center; padding: 12px; margin: 20px 0; border-radius: 12px; font-size: 14px; color: #555; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #cbd5e0; padding: 10px; text-align: right; }
-        th { background: #1e466e; color: white; }
-        tr:nth-child(even) { background: #f9fafb; }
-        .loading { text-align: center; font-size: 18px; color: #1e466e; }
-        footer { text-align: center; margin-top: 30px; font-size: 12px; color: #888; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            min-height: 100vh;
+        }
+        .search-container {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .search-container:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+        .result-card, .email-modal {
+            animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .email-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none;
+        }
+        .input-error {
+            border-color: #f87171 !important;
+            background-color: #fef2f2 !important;
+        }
+        .user-card {
+            background: linear-gradient(to right, #ffffff, #f9fafb);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.2s;
+        }
+        .info-item:hover {
+            background-color: #f8fafc;
+            transform: translateX(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .info-item.highlight-red .info-value {
+            color: #dc2626 !important;
+            font-weight: 700;
+        }
+        .info-label {
+            color: #334155;
+            font-weight: 600;
+            min-width: 160px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-value {
+            color: #0f172a;
+            font-weight: 700;
+            text-align: left;
+            flex: 1;
+            direction: ltr;
+            word-break: break-word;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+        .section-title {
+            position: relative;
+            padding-right: 20px;
+            margin-bottom: 20px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: -8px;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, #3b82f6, #60a5fa);
+            border-radius: 3px;
+        }
+        .success-badge {
+            background: linear-gradient(to right, #10b981, #34d399);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .payments-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+        }
+        .payments-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .payments-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .payments-scroll::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        .payments-scroll::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
     </style>
 </head>
-<body>
-<div class="container">
-    <h1>📊 كشف مرتبات معلمي محافظة مطروح</h1>
-    <div class="ad-space">
-        🧩 سيتم وضع إعلانات Google AdSense هنا قريبًا – ادعم المشروع بمشاهدة الإعلانات
+<body class="text-slate-800">
+    <div class="container mx-auto max-w-4xl py-10 px-4">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-blue-700 mb-3">
+                <i class="fas fa-id-card mr-2" aria-hidden="true"></i>
+                ادارة النجيلة التعليمية
+            </h1>
+            <p class="text-slate-600 max-w-2xl mx-auto">
+                نظام متكامل للبحث عن بيانات الموظفين باستخدام الرقم القومي و البريد الإلكتروني
+            </p>
+        </header>
+
+        <main>
+        <div class="search-container bg-white mb-10">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 py-5 px-6">
+                <h2 class="text-xl font-bold text-white flex items-center">
+                    <i class="fas fa-search mr-3" aria-hidden="true"></i>
+                    بيانات الموظف
+                </h2>
+            </div>
+            
+            <div class="p-6">
+                <form id="login-form" class="flex flex-col gap-5" novalidate>
+                    <div>
+                        <label for="email-input" class="block text-slate-700 mb-2 font-medium">
+                            <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
+                            البريد الإلكتروني
+                        </label>
+                        <input type="email" id="email-input" name="email" autocomplete="email"
+                            class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                            placeholder="ادخل البريد الإلكتروني..." required>
+                    </div>
+                    
+                    <div>
+                        <label for="national-id-input" class="block text-slate-700 mb-2 font-medium">
+                            <i class="fas fa-id-card mr-2 text-blue-500" aria-hidden="true"></i>
+                            الرقم القومي
+                        </label>
+                        <input type="text" inputmode="numeric" pattern="\d{14}" id="national-id-input" name="nationalId"
+                            class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                            placeholder="ادخل الرقم القومي (14 رقمًا)..." maxlength="14" required aria-describedby="nid-help">
+                        <p id="nid-help" class="text-sm text-slate-500 mt-1">يجب أن يتكون الرقم القومي من 14 رقمًا فقط</p>
+                    </div>
+                    
+                    <button type="submit" id="search-btn"
+                        class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3 transition-all hover:shadow-lg">
+                        <i class="fas fa-search mr-2" aria-hidden="true"></i>
+                        البحث
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;" aria-live="polite">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-blue-700 flex items-center">
+                    <i class="fas fa-user-circle mr-3" aria-hidden="true"></i>
+                    بيانات الموظف
+                </h2>
+                <div class="flex items-center gap-3">
+                    <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-search mr-2" aria-hidden="true"></i>بحث جديد
+                    </button>
+                    <div id="update-success" class="success-badge" style="display:none;" role="status" aria-live="polite">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                        تم تحديث البيانات بنجاح
+                    </div>
+                </div>
+            </div>
+            
+            <div class="user-card">
+                <div id="user-data" class="divide-y divide-slate-100"></div>
+            </div>
+            
+            <div class="highlight-box mt-6">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1" aria-hidden="true"></i>
+                    <div>
+                        <h3 class="font-bold text-blue-800">ملاحظات هامة</h3>
+                        <p class="text-slate-700 mt-2">
+                            • هذه البيانات غير رسمية <br>
+                            • ولا يعتد بها أمام أي جهة قانونية
+                        </p>
+                        <h4 class="font-bold text-blue-700 mt-4 mb-2">للتواصل مع الدعم الفني:</h4>
+                        <ul class="text-slate-700 space-y-1">
+                            <li>
+                                <i class="fab fa-whatsapp text-green-500 w-5" aria-hidden="true"></i>
+                                واتساب: <a href="https://wa.me/201009844479" class="text-blue-600 hover:underline">201009844479</a>
+                            </li>
+                            <li>
+                                <i class="fas fa-phone text-blue-500 w-5" aria-hidden="true"></i>
+                                اتصال مباشر: <a href="tel:+201009844479" class="text-blue-600 hover:underline">201009844479</a>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope text-red-500 w-5" aria-hidden="true"></i>
+                                بريد إلكتروني: <a href="mailto:refaat252@gmail.com" class="text-blue-600 hover:underline">refaat252@gmail.com</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="error-section" class="bg-red-50 border border-red-200 rounded-xl p-5 mt-6" style="display:none;" role="alert" aria-live="assertive">
+            <div class="flex items-start">
+                <i class="fas fa-exclamation-circle text-red-500 text-2xl mt-1 mr-3" aria-hidden="true"></i>
+                <div>
+                    <h3 class="font-bold text-red-700 text-lg">خطأ في عملية البحث</h3>
+                    <p id="error-message" class="text-red-600 mt-1">حدث خطأ أثناء عملية البحث. الرجاء المحاولة مرة أخرى.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="instructions-section" class="bg-blue-50 rounded-2xl p-6 mt-10">
+            <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
+                <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
+                تعليمات الاستخدام
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-id-card text-blue-600" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">الرقم القومي</h4>
+                        <p class="text-slate-700 text-sm mt-1">يجب إدخال 14 رقمًا فقط دون أي أحرف أو رموز</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-at text-blue-600" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">البريد الإلكتروني</h4>
+                        <p class="text-slate-700 text-sm mt-1">يجب أن يكون البريد الإلكتروني بتنسيق صحيح مثل example@domain.com</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-sync-alt text-blue-600" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">تحديث البيانات</h4>
+                        <p class="text-slate-700 text-sm mt-1">يمكنك تحديث البريد الإلكتروني إذا لم يكن مرتبطًا بالرقم القومي</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-shield-alt text-blue-600" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">الأمان والخصوصية</h4>
+                        <p class="text-slate-700 text-sm mt-1">جميع البيانات محمية ولا يتم مشاركتها مع أي جهات خارجية</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </main>
     </div>
-    <div id="loading" class="loading">⏳ جاري تحميل بيانات المعلمين...</div>
-    <div id="table-container" style="display:none;"></div>
-    <footer>بيانات محدثة من النظام الرسمي - إدارة مطروح التعليمية</footer>
-</div>
 
-<script>
-    // ⚠️ ضع رابط الـ API الذي نسخته من Google Apps Script هنا
-    const API_URL = 'https://script.google.com/macros/s/AKfycbxuBrCsHWzQ7oJ-hgm9qcUc7_MkZ8qPRdqFUF_93qiEdKf4UjIfp3AtgaIlLThuuO1XBA/exec';
+    <!-- نافذة إضافة البريد الإلكتروني -->
+    <div class="modal-overlay" id="email-modal-overlay" tabindex="-1"></div>
+    <div class="email-modal" id="email-modal" role="dialog" aria-modal="true" aria-labelledby="email-modal-title" aria-describedby="modal-message">
+        <div class="bg-white rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="email-modal-title" class="text-xl font-bold text-blue-700 flex items-center">
+                    <i class="fas fa-envelope mr-2" aria-hidden="true"></i>
+                    تحديث البريد الإلكتروني
+                </h3>
+                <button id="close-email-modal" class="text-slate-500 hover:text-slate-700" aria-label="إغلاق النافذة">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            
+            <div class="mb-4 bg-blue-50 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i class="fas fa-info-circle text-blue-500 mr-2" aria-hidden="true"></i>
+                    <p class="text-blue-800">
+                        الرقم القومي: <span id="user-national-id" class="font-bold"></span>
+                    </p>
+                </div>
+                <p id="modal-message" class="text-slate-700 mt-2">يمكنك إضافة أو تحديث البريد الإلكتروني لهذا الحساب.</p>
+            </div>
+            
+            <form id="email-form" novalidate>
+                <div class="mb-4">
+                    <label for="new-email-input" class="block text-slate-700 mb-2 font-medium">
+                        <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
+                        البريد الإلكتروني الجديد
+                    </label>
+                    <input type="email" id="new-email-input" name="newEmail" autocomplete="email"
+                        class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                        placeholder="example@domain.com" required>
+                    <div id="email-error" class="text-red-500 text-sm mt-2 hidden" role="alert">
+                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+                        <span id="email-error-message"></span>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="confirm-email-input" class="block text-slate-700 mb-2 font-medium">
+                        <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
+                        تأكيد البريد الإلكتروني
+                    </label>
+                    <input type="email" id="confirm-email-input" name="confirmEmail" autocomplete="off"
+                        class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                        placeholder="أعد إدخال البريد الإلكتروني" required>
+                </div>
+                
+                <div class="flex gap-3 mt-6">
+                    <button type="button" id="cancel-email-btn" class="flex-1 text-slate-700 bg-slate-200 hover:bg-slate-300 font-medium rounded-xl text-lg px-6 py-3">
+                        إلغاء
+                    </button>
+                    <button type="submit" id="save-email-btn" class="flex-1 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-xl text-lg px-6 py-3">
+                        حفظ البريد
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    async function fetchTeachers() {
+    <template id="info-row-template">
+        <div class="info-item">
+            <div class="info-label"></div>
+            <div class="info-value"></div>
+        </div>
+    </template>
+
+    <script type="module">
+    import { CONFIG } from './config.js';
+
+    // ====================================================
+    //  الأدوات المساعدة
+    // ====================================================
+
+    let currentUser = null;
+
+    function escapeHTML(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function normalizeKey(k) {
+        return k ? k.toString().trim().normalize('NFKC') : '';
+    }
+
+    function fetchWithTimeout(resource, options = {}) {
+        const { timeout = 10000 } = options;
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        return fetch(resource, { ...options, signal: controller.signal })
+            .finally(() => clearTimeout(id));
+    }
+
+    // ====================================================
+    //  وظائف البحث والتحديث (باستخدام الـ API الجديد)
+    // ====================================================
+
+    async function searchUser(nationalId, email) {
         try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('فشل الاتصال بالخادم');
-            const data = await response.json();
-            displayTable(data);
-        } catch (err) {
-            document.getElementById('loading').innerHTML = '❌ خطأ: ' + err.message + '<br>تأكد من الرابط وتجربة تحديث الصفحة';
+            // نبحث باستخدام الرقم القومي مع إضافة المفتاح
+            const url = `${CONFIG.API_URL}?key=${CONFIG.API_KEY}&nationalId=${encodeURIComponent(nationalId)}`;
+            const response = await fetchWithTimeout(url, { timeout: 10000 });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const result = await response.json();
+            if (result.success) {
+                // التحقق من البريد الإلكتروني (إذا كان موجوداً في قاعدة البيانات)
+                const registeredEmail = (result.data['البريد'] || '').trim();
+                if (registeredEmail && registeredEmail.toLowerCase() === email.toLowerCase()) {
+                    return { user: result.data, message: 'تم العثور على المستخدم' };
+                } else if (!registeredEmail) {
+                    // البريد غير مسجل، نطلب من المستخدم إضافته
+                    return { user: result.data, message: 'البريد غير مسجل', requiresUpdate: true };
+                } else {
+                    return { user: null, message: 'البريد الإلكتروني المدخل غير متطابق مع البريد المسجل' };
+                }
+            } else {
+                return { user: null, message: result.message || 'لم يتم العثور على المستخدم' };
+            }
+        } catch (error) {
+            console.error('Search failed:', error);
+            return { user: null, message: 'فشل الاتصال بالخادم: ' + error.message };
         }
     }
 
-    function displayTable(teachers) {
-        if (!teachers || teachers.length === 0) {
-            document.getElementById('loading').innerHTML = '⚠️ لا توجد بيانات لعرضها';
+    async function updateUserEmail(nationalId, newEmail) {
+        try {
+            const response = await fetchWithTimeout(CONFIG.API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    key: CONFIG.API_KEY,
+                    nationalId: nationalId,
+                    email: newEmail
+                }),
+                timeout: 10000
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const result = await response.json();
+            if (result.success) {
+                return { success: true, message: result.message || 'تم التحديث بنجاح' };
+            } else {
+                return { success: false, message: result.error || 'فشل التحديث' };
+            }
+        } catch (error) {
+            console.error('Update failed:', error);
+            return { success: false, message: 'فشل الاتصال بالخادم: ' + error.message };
+        }
+    }
+
+    // ====================================================
+    //  دوال العرض والواجهة
+    // ====================================================
+
+    function makeInfoRow(label, value, iconClass) {
+        const tpl = document.getElementById('info-row-template');
+        const clone = tpl.content.cloneNode(true);
+        const labelEl = clone.querySelector('.info-label');
+        const valueEl = clone.querySelector('.info-value');
+        const infoItem = clone.querySelector('.info-item');
+
+        if (value && value.includes('متأخرات')) {
+            infoItem.classList.add('highlight-red');
+        }
+
+        if (iconClass) {
+            const icon = document.createElement('i');
+            icon.className = `fas ${iconClass} ml-2 text-blue-500`;
+            icon.setAttribute('aria-hidden', 'true');
+            labelEl.appendChild(icon);
+        }
+
+        labelEl.appendChild(document.createTextNode(label));
+        valueEl.textContent = value;
+        return clone;
+    }
+
+    function clearElement(el) {
+        while (el.firstChild) el.removeChild(el.firstChild);
+    }
+
+    function showResult(user) {
+        document.querySelector('.search-container').style.display = 'none';
+        document.getElementById('instructions-section').style.display = 'none';
+        document.getElementById('error-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+
+        const fieldsToDisplay = [
+            'الاسم',
+            'الرقم القومى',
+            'الدرجة',
+            'عدد التذاكر',
+            'الحالة الاجتماعية',
+            'اساسى 30/6',
+            'اساسى يوليو 2025'
+        ];
+
+        const fieldIcons = {
+            'الاسم': 'fa-user',
+            'الرقم القومى': 'fa-id-card',
+            'الدرجة': 'fa-star',
+            'عدد التذاكر': 'fa-ticket-alt',
+            'الحالة الاجتماعية': 'fa-people-arrows',
+            'اساسى 30/6': 'fa-money-bill-wave',
+            'اساسى يوليو 2025': 'fa-money-bill-wave',
+        };
+
+        const container = document.getElementById('user-data');
+        clearElement(container);
+
+        const basicWrapper = document.createElement('div');
+        basicWrapper.className = 'divide-y divide-slate-100';
+
+        fieldsToDisplay.forEach(key => {
+            let value = user[normalizeKey(key)];
+            if (key === 'اساسى 30/6' && (!value || value === '')) {
+                value = user['اساسى 2014'] || user[normalizeKey('اساسى 2014')];
+            }
+            if (value) {
+                const icon = fieldIcons[key] || 'fa-info-circle';
+                const row = makeInfoRow(key, value, icon);
+                basicWrapper.appendChild(row);
+            }
+        });
+
+        container.appendChild(basicWrapper);
+
+        const additional = Object.keys(user).filter(k => {
+            const readableKey = k;
+            return !fieldsToDisplay.some(f => normalizeKey(f) === normalizeKey(readableKey)) &&
+                normalizeKey(readableKey) !== normalizeKey('البريد') &&
+                normalizeKey(readableKey) !== normalizeKey('اساسى 2014');
+        });
+
+        if (additional.length > 0) {
+            const section = document.createElement('div');
+            section.className = 'mt-8';
+            const title = document.createElement('h3');
+            title.className = 'font-bold text-blue-700 text-xl mb-4';
+            title.textContent = 'مدفوعات';
+            section.appendChild(title);
+
+            const scroll = document.createElement('div');
+            scroll.className = 'payments-scroll p-2';
+
+            additional.forEach(key => {
+                const val = user[key];
+                if (val) {
+                    const row = makeInfoRow(key, val);
+                    scroll.appendChild(row);
+                }
+            });
+
+            section.appendChild(scroll);
+            container.appendChild(section);
+        }
+    }
+
+    function showError(message) {
+        document.querySelector('.search-container').style.display = 'block';
+        document.getElementById('instructions-section').style.display = 'block';
+        document.getElementById('result-section').style.display = 'none';
+        const err = document.getElementById('error-section');
+        document.getElementById('error-message').textContent = message;
+        err.style.display = 'block';
+    }
+
+    // ====================================================
+    //  دوال النافذة المنبثقة
+    // ====================================================
+
+    function openEmailModal(nationalId, hasEmail, prefilledEmail = '') {
+        const modal = document.getElementById('email-modal');
+        document.getElementById('user-national-id').textContent = nationalId;
+        const messageEl = document.getElementById('modal-message');
+        if (hasEmail) {
+            messageEl.textContent = 'تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.';
+        } else {
+            messageEl.textContent = 'لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال البريد الإلكتروني.';
+        }
+        document.getElementById('new-email-input').value = prefilledEmail || '';
+        document.getElementById('confirm-email-input').value = '';
+        document.getElementById('email-modal-overlay').style.display = 'block';
+        modal.style.display = 'block';
+        document.getElementById('new-email-input').focus();
+    }
+
+    function closeEmailModal() {
+        const modal = document.getElementById('email-modal');
+        modal.style.display = 'none';
+        document.getElementById('email-modal-overlay').style.display = 'none';
+        document.getElementById('new-email-input').value = '';
+        document.getElementById('confirm-email-input').value = '';
+        document.getElementById('email-error').classList.add('hidden');
+        document.getElementById('email-input').focus();
+    }
+
+    // ====================================================
+    //  ربط الأحداث (Event Listeners)
+    // ====================================================
+
+    document.getElementById('new-search-btn').addEventListener('click', function() {
+        document.querySelector('.search-container').style.display = 'block';
+        document.getElementById('result-section').style.display = 'none';
+        document.getElementById('instructions-section').style.display = 'block';
+        document.getElementById('email-input').value = '';
+        document.getElementById('national-id-input').value = '';
+        document.getElementById('email-input').focus();
+    });
+
+    document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
+    document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
+    document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('email-modal');
+            if (modal && modal.style.display === 'block') closeEmailModal();
+        }
+    });
+
+    // معالجة نموذج البحث
+    document.getElementById('login-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const email = document.getElementById('email-input').value.trim();
+        const nationalId = document.getElementById('national-id-input').value.trim();
+        
+        document.getElementById('email-input').classList.remove('input-error');
+        document.getElementById('national-id-input').classList.remove('input-error');
+        document.getElementById('error-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'none';
+        document.getElementById('update-success').style.display = 'none';
+
+        if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
+            showError('الرقم القومي يجب أن يتكون من 14 رقمًا فقط.');
+            document.getElementById('national-id-input').classList.add('input-error');
             return;
         }
-        const headers = Object.keys(teachers[0]);
-        let html = `<table><thead><tr>`;
-        headers.forEach(h => html += `<th>${h}</th>`);
-        html += `</tr></thead><tbody>`;
-        teachers.forEach(t => {
-            html += `<tr>`;
-            headers.forEach(h => html += `<td>${t[h] !== undefined ? t[h] : ''}</td>`);
-            html += `</tr>`;
-        });
-        html += `</tbody></table>`;
-        document.getElementById('table-container').innerHTML = html;
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('table-container').style.display = 'block';
-    }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError('صيغة البريد الإلكتروني غير صحيحة.');
+            document.getElementById('email-input').classList.add('input-error');
+            return;
+        }
 
-    fetchTeachers();
-</script>
+        // بدء البحث
+        const btn = document.getElementById('search-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري البحث...';
+
+        const result = await searchUser(nationalId, email);
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-search mr-2" aria-hidden="true"></i> البحث';
+
+        if (result.user) {
+            currentUser = result.user;
+            if (result.requiresUpdate) {
+                openEmailModal(nationalId, false, email);
+            } else {
+                showResult(result.user);
+            }
+        } else {
+            showError(result.message);
+        }
+    });
+
+    // معالجة نموذج تحديث البريد
+    document.getElementById('email-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const email = document.getElementById('new-email-input').value.trim();
+        const confirmEmail = document.getElementById('confirm-email-input').value.trim();
+        const errorElement = document.getElementById('email-error');
+        const nationalId = document.getElementById('user-national-id').textContent;
+        
+        errorElement.classList.add('hidden');
+        
+        if (email !== confirmEmail) {
+            document.getElementById('email-error-message').textContent = 'البريد الإلكتروني وتأكيده غير متطابقين.';
+            errorElement.classList.remove('hidden');
+            return;
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            document.getElementById('email-error-message').textContent = 'صيغة البريد الإلكتروني غير صحيحة.';
+            errorElement.classList.remove('hidden');
+            return;
+        }
+
+        const saveBtn = document.getElementById('save-email-btn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري الحفظ...';
+
+        const updateResult = await updateUserEmail(nationalId, email);
+
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = 'حفظ البريد';
+
+        if (updateResult.success) {
+            // تحديث البيانات المحلية
+            if (currentUser) currentUser['البريد'] = email;
+            closeEmailModal();
+            showResult(currentUser);
+            const success = document.getElementById('update-success');
+            success.style.display = 'flex';
+            setTimeout(() => success.style.display = 'none', 5000);
+        } else {
+            document.getElementById('email-error-message').textContent = updateResult.message;
+            errorElement.classList.remove('hidden');
+        }
+    });
+
+    // تركيز تلقائي
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('email-input').focus();
+    });
+    </script>
 </body>
 </html>
