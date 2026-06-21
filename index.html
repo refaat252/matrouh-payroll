@@ -29,6 +29,30 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                max-height: 1000px;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                max-height: 1000px;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                max-height: 0;
+                transform: translateY(-10px);
+            }
+        }
         .email-modal {
             position: fixed;
             top: 50%;
@@ -172,6 +196,61 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             margin-bottom: 16px;
         }
+        
+        /* تثبيت قسم البيانات الأساسية */
+        .basic-section-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        /* قسم المدفوعات الإضافية مع تأثير الطي */
+        .collapsible-payments-section {
+            overflow: hidden;
+            animation: slideDown 0.4s ease-out;
+        }
+        
+        .collapsible-payments-section.collapsed {
+            animation: slideUp 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+        }
+        
+        .collapse-toggle-btn {
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            transition: all 0.3s ease;
+        }
+        
+        .collapse-toggle-btn:hover {
+            background: #f8fafc;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+        
+        .collapse-toggle-btn .toggle-icon {
+            transition: transform 0.3s ease;
+            color: #3b82f6;
+        }
+        
+        .collapse-toggle-btn.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+        
         .payment-item {
             display: flex;
             justify-content: space-between;
@@ -258,6 +337,10 @@
             .highlight-box {
                 padding: 12px;
             }
+            .collapse-toggle-btn {
+                padding: 12px;
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
@@ -306,7 +389,7 @@
                     </div>
                     
                     <button type="submit" id="search-btn"
-                        class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3 transition-all hover:shadow-lg">
+                        class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg py-3 transition-all">
                         <i class="fas fa-search mr-2" aria-hidden="true"></i>
                         البحث
                     </button>
@@ -331,9 +414,7 @@
                 </div>
             </div>
             
-            <div class="user-card">
-                <div id="user-data" class="divide-y divide-slate-100"></div>
-            </div>
+            <div id="user-data" class="divide-y divide-slate-100"></div>
             
             <div class="highlight-box mt-6">
                 <div class="flex items-start">
@@ -497,6 +578,7 @@
     // ====================================================
 
     let currentUser = null;
+    let isPaymentsExpanded = true;
 
     function escapeHTML(str) {
         if (str === null || str === undefined) return '';
@@ -626,7 +708,22 @@
         while (el.firstChild) el.removeChild(el.firstChild);
     }
 
-    // ✅ دالة العرض المحسنة مع إضافة "عدد التذاكر" وتحسين العرض على الهواتف
+    function togglePaymentSection() {
+        const paymentSection = document.getElementById('payments-section');
+        const toggleBtn = document.getElementById('payments-toggle-btn');
+        
+        isPaymentsExpanded = !isPaymentsExpanded;
+        
+        if (isPaymentsExpanded) {
+            paymentSection.classList.remove('collapsed');
+            toggleBtn.classList.remove('collapsed');
+        } else {
+            paymentSection.classList.add('collapsed');
+            toggleBtn.classList.add('collapsed');
+        }
+    }
+
+    // ✅ دالة العرض المحسنة مع تثبيت قسم الأساسية وطي المدفوعات
     function showResult(user) {
         document.querySelector('.search-container').style.display = 'none';
         document.getElementById('instructions-section').style.display = 'none';
@@ -636,24 +733,21 @@
         const container = document.getElementById('user-data');
         clearElement(container);
 
-        // ========== القسم الأول: المعلومات الأساسية ==========
+        // ========== القسم الأول: المعلومات الأساسية (STICKY) ==========
         const basicSection = document.createElement('div');
-        basicSection.className = 'salary-card';
+        basicSection.className = 'salary-card basic-section-sticky';
         const basicTitle = document.createElement('h3');
         basicTitle.className = 'section-header';
         basicTitle.innerHTML = '<i class="fas fa-user-circle ml-2"></i> المعلومات الأساسية';
         basicSection.appendChild(basicTitle);
 
-        // ✅ إضافة "عدد التذاكر" ضمن الأساسية
         const basicFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر'];
         basicFields.forEach(key => {
             let value = user[normalizeKey(key)];
-            // إذا كان "عدد التذاكر" ولم توجد قيمة، نبحث بأسماء أخرى
             if (!value && key === 'عدد التذاكر') {
                 value = user['عدد التذاكر'] || user['عدد_التذاكر'] || user['تذاكر'] || '';
             }
             if (value) {
-                // عرض الأرقام بدون عملة (لأنها عدد وليس مبلغ)
                 const isCurrency = false;
                 const row = makeInfoRow(key, value, 'fa-info-circle', isCurrency);
                 basicSection.appendChild(row);
@@ -682,15 +776,29 @@
         });
         container.appendChild(salarySection);
 
-        // ========== القسم الثالث: المدفوعات الإضافية ==========
-        const paymentsSection = document.createElement('div');
-        paymentsSection.className = 'salary-card';
-        const paymentsTitle = document.createElement('h3');
-        paymentsTitle.className = 'section-header';
-        paymentsTitle.innerHTML = '<i class="fas fa-list-ul ml-2"></i> المدفوعات الإضافية';
-        paymentsSection.appendChild(paymentsTitle);
+        // ========== القسم الثالث: المدفوعات الإضافية (COLLAPSIBLE) ==========
+        
+        // زر الطي
+        const toggleBtn = document.createElement('button');
+        toggleBtn.id = 'payments-toggle-btn';
+        toggleBtn.className = 'collapse-toggle-btn';
+        toggleBtn.type = 'button';
+        toggleBtn.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-list-ul ml-2" aria-hidden="true"></i>
+                <span>المدفوعات الإضافية</span>
+            </div>
+            <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
+        `;
+        toggleBtn.addEventListener('click', togglePaymentSection);
+        container.appendChild(toggleBtn);
 
-        const excludeFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر', 'اساسى 30/6', 'اساسى يوليو 2025', 'اساسى 2014', 'البريد'];
+        // قسم المدفوعات
+        const paymentsSection = document.createElement('div');
+        paymentsSection.id = 'payments-section';
+        paymentsSection.className = 'collapsible-payments-section salary-card';
+
+        const excludeFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر', 'اساسى 30/6', 'اساسى يوليو 2025', 'البريد'];
         let totalPayments = 0;
         let hasPayments = false;
 
@@ -735,6 +843,9 @@
         }
 
         container.appendChild(paymentsSection);
+
+        // إعادة تعيين حالة الطي
+        isPaymentsExpanded = true;
     }
 
     // ====================================================
