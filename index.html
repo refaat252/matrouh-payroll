@@ -547,17 +547,20 @@ function makeInfoRow(label, value, iconClass) {
         const basicWrapper = document.createElement('div');
         basicWrapper.className = 'divide-y divide-slate-100';
 
-        fieldsToDisplay.forEach(key => {
-            let value = user[normalizeKey(key)];
-            if (key === 'اساسى 30/6' && (!value || value === '')) {
-                value = user['اساسى 2014'] || user[normalizeKey('اساسى 2014')];
-            }
-            if (value) {
-                const icon = fieldIcons[key] || 'fa-info-circle';
-                const row = makeInfoRow(key, value, icon);
-                basicWrapper.appendChild(row);
-            }
-        });
+       // داخل showResult، عند عرض الحقول
+fieldsToDisplay.forEach(key => {
+    let value = user[normalizeKey(key)];
+    if (key === 'اساسى 30/6' && (!value || value === '')) {
+        value = user['اساسى 2014'] || user[normalizeKey('اساسى 2014')];
+    }
+    if (value) {
+        const icon = fieldIcons[key] || 'fa-info-circle';
+        // ✅ تأكد من أن القيمة نصية
+        const stringValue = String(value);
+        const row = makeInfoRow(key, stringValue, icon);
+        basicWrapper.appendChild(row);
+    }
+});
 
         container.appendChild(basicWrapper);
 
