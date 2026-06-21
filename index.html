@@ -484,28 +484,32 @@
     //  دوال العرض والواجهة
     // ====================================================
 
-    function makeInfoRow(label, value, iconClass) {
-        const tpl = document.getElementById('info-row-template');
-        const clone = tpl.content.cloneNode(true);
-        const labelEl = clone.querySelector('.info-label');
-        const valueEl = clone.querySelector('.info-value');
-        const infoItem = clone.querySelector('.info-item');
+function makeInfoRow(label, value, iconClass) {
+    const tpl = document.getElementById('info-row-template');
+    const clone = tpl.content.cloneNode(true);
+    const labelEl = clone.querySelector('.info-label');
+    const valueEl = clone.querySelector('.info-value');
+    const infoItem = clone.querySelector('.info-item');
 
-        if (value && value.includes('متأخرات')) {
-            infoItem.classList.add('highlight-red');
-        }
+    // ✅ تحويل القيمة إلى نص مع التأكد من عدم وجودها
+    const safeValue = (value !== null && value !== undefined) ? String(value) : '';
 
-        if (iconClass) {
-            const icon = document.createElement('i');
-            icon.className = `fas ${iconClass} ml-2 text-blue-500`;
-            icon.setAttribute('aria-hidden', 'true');
-            labelEl.appendChild(icon);
-        }
-
-        labelEl.appendChild(document.createTextNode(label));
-        valueEl.textContent = value;
-        return clone;
+    // التحقق من وجود كلمة "متأخرات" (بعد التأكد من أنها نص)
+    if (safeValue && safeValue.includes('متأخرات')) {
+        infoItem.classList.add('highlight-red');
     }
+
+    if (iconClass) {
+        const icon = document.createElement('i');
+        icon.className = `fas ${iconClass} ml-2 text-blue-500`;
+        icon.setAttribute('aria-hidden', 'true');
+        labelEl.appendChild(icon);
+    }
+
+    labelEl.appendChild(document.createTextNode(label));
+    valueEl.textContent = safeValue;
+    return clone;
+}
 
     function clearElement(el) {
         while (el.firstChild) el.removeChild(el.firstChild);
