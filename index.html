@@ -81,7 +81,7 @@
         .info-label {
             color: #334155;
             font-weight: 600;
-            min-width: 160px;
+            min-width: 140px;
             font-size: 1rem;
             display: flex;
             align-items: center;
@@ -164,19 +164,20 @@
             background: #64748b;
         }
 
-        /* تحسينات التنسيق الجديدة */
+        /* تحسينات العرض على الشاشات الصغيرة */
         .salary-card {
             background: white;
             border-radius: 16px;
-            padding: 20px;
+            padding: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .payment-item {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
             border-bottom: 1px solid #f1f5f9;
+            flex-wrap: wrap;
         }
         .payment-item:last-child {
             border-bottom: none;
@@ -184,7 +185,7 @@
         .amount {
             font-weight: bold;
             color: #0f172a;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
         .total {
             margin-top: 12px;
@@ -192,7 +193,8 @@
             border-top: 2px solid #3b82f6;
             display: flex;
             justify-content: space-between;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
+            flex-wrap: wrap;
         }
         .total .amount {
             color: #1e40af;
@@ -211,9 +213,51 @@
             font-size: 1.1rem;
             font-weight: 700;
             color: #1e3a8a;
-            margin: 16px 0 10px 0;
+            margin: 0 0 12px 0;
             padding-right: 12px;
             border-right: 4px solid #3b82f6;
+        }
+
+        /* 📱 تنسيقات خاصة بالهواتف */
+        @media (max-width: 640px) {
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 12px 16px;
+            }
+            .info-label {
+                min-width: unset;
+                font-size: 0.9rem;
+                margin-bottom: 4px;
+            }
+            .info-value {
+                font-size: 0.95rem;
+                text-align: right;
+                width: 100%;
+            }
+            .payment-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .payment-item .amount {
+                margin-top: 2px;
+            }
+            .total {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .salary-card {
+                padding: 12px;
+            }
+            .section-header {
+                font-size: 1rem;
+            }
+            .container {
+                padding: 8px;
+            }
+            .highlight-box {
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -476,7 +520,6 @@
             .finally(() => clearTimeout(id));
     }
 
-    // ✅ دالة تنسيق الأرقام (فواصل + عملة)
     function formatCurrency(value) {
         if (value === null || value === undefined || value === '') return '—';
         const num = parseFloat(value);
@@ -484,12 +527,11 @@
         return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ج.م';
     }
 
-    // ✅ دالة تنسيق الأرقام بدون عملة (للمقارنة)
     function formatNumber(value) {
         if (value === null || value === undefined || value === '') return '—';
         const num = parseFloat(value);
         if (isNaN(num)) return String(value);
-        return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
     // ====================================================
@@ -571,7 +613,6 @@
 
         labelEl.appendChild(document.createTextNode(label));
 
-        // ✅ عرض القيمة مع تنسيق العملة إذا كان المطلوب
         if (isCurrency && safeValue !== '—') {
             valueEl.textContent = formatCurrency(safeValue);
         } else {
@@ -585,7 +626,7 @@
         while (el.firstChild) el.removeChild(el.firstChild);
     }
 
-    // ✅ دالة العرض المحسنة مع أقسام وتنسيق
+    // ✅ دالة العرض المحسنة مع إضافة "عدد التذاكر" وتحسين العرض على الهواتف
     function showResult(user) {
         document.querySelector('.search-container').style.display = 'none';
         document.getElementById('instructions-section').style.display = 'none';
@@ -603,11 +644,18 @@
         basicTitle.innerHTML = '<i class="fas fa-user-circle ml-2"></i> المعلومات الأساسية';
         basicSection.appendChild(basicTitle);
 
-        const basicFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية'];
+        // ✅ إضافة "عدد التذاكر" ضمن الأساسية
+        const basicFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر'];
         basicFields.forEach(key => {
-            const value = user[normalizeKey(key)];
+            let value = user[normalizeKey(key)];
+            // إذا كان "عدد التذاكر" ولم توجد قيمة، نبحث بأسماء أخرى
+            if (!value && key === 'عدد التذاكر') {
+                value = user['عدد التذاكر'] || user['عدد_التذاكر'] || user['تذاكر'] || '';
+            }
             if (value) {
-                const row = makeInfoRow(key, value, 'fa-info-circle', false);
+                // عرض الأرقام بدون عملة (لأنها عدد وليس مبلغ)
+                const isCurrency = false;
+                const row = makeInfoRow(key, value, 'fa-info-circle', isCurrency);
                 basicSection.appendChild(row);
             }
         });
@@ -642,7 +690,7 @@
         paymentsTitle.innerHTML = '<i class="fas fa-list-ul ml-2"></i> المدفوعات الإضافية';
         paymentsSection.appendChild(paymentsTitle);
 
-        const excludeFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'اساسى 30/6', 'اساسى يوليو 2025', 'اساسى 2014', 'البريد'];
+        const excludeFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر', 'اساسى 30/6', 'اساسى يوليو 2025', 'اساسى 2014', 'البريد'];
         let totalPayments = 0;
         let hasPayments = false;
 
@@ -672,7 +720,6 @@
 
         if (hasPayments) {
             paymentsSection.appendChild(paymentList);
-            // إضافة الإجمالي
             const totalRow = document.createElement('div');
             totalRow.className = 'total';
             totalRow.innerHTML = `
@@ -753,7 +800,6 @@
         }
     });
 
-    // نموذج البحث
     document.getElementById('login-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         const email = document.getElementById('email-input').value.trim();
@@ -799,7 +845,6 @@
         }
     });
 
-    // نموذج تحديث البريد
     document.getElementById('email-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         const email = document.getElementById('new-email-input').value.trim();
