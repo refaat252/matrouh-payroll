@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ========== نفس الأنماط السابقة ========== */
         * {
             color-scheme: light dark;
         }
@@ -15,10 +16,7 @@
         :root {
             --bg-light: #f0f4ff;
             --bg-light-2: #e6f0ff;
-            --bg-dark: #1a1f3a;
-            --bg-dark-2: #16213e;
             --text-light: #0f172a;
-            --text-dark: #e0e0e0;
             --card-light: #ffffff;
             --card-dark: #2d3748;
         }
@@ -99,10 +97,6 @@
                 background: #3a4556;
             }
 
-            .divider-separator {
-                background-color: #4a5568 !important;
-            }
-
             .basic-section-sticky {
                 background: #2d3748 !important;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
@@ -174,70 +168,18 @@
         }
 
         @media print {
-            * {
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            html, body {
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
             .search-container,
             .instructions-section,
             #new-search-btn,
             #print-btn,
             #export-btn,
-            .highlight-box,
-            #result-section > div:first-child {
+            .highlight-box {
                 display: none !important;
             }
 
             body {
                 background: white !important;
                 color: black !important;
-                font-size: 11px !important;
-            }
-
-            .container {
-                max-width: 100% !important;
-                padding: 8px !important;
-                margin: 0 !important;
-            }
-
-            header {
-                margin-bottom: 8px !important;
-                page-break-after: avoid;
-            }
-
-            h1 {
-                font-size: 16px !important;
-                margin: 0 0 4px 0 !important;
-                page-break-after: avoid;
-            }
-
-            h2 {
-                font-size: 13px !important;
-                margin: 0 0 6px 0 !important;
-                page-break-after: avoid;
-            }
-
-            h3 {
-                font-size: 12px !important;
-                margin: 0 0 4px 0 !important;
-                page-break-after: avoid;
-            }
-
-            h4 {
-                font-size: 11px !important;
-                margin: 0 0 3px 0 !important;
-                page-break-after: avoid;
-            }
-
-            p {
-                margin: 0 0 3px 0 !important;
-                page-break-inside: avoid;
             }
 
             .salary-card,
@@ -246,65 +188,10 @@
                 box-shadow: none !important;
                 border: 1px solid #e0e0e0;
                 background: white !important;
-                margin: 0 0 6px 0 !important;
-                padding: 6px !important;
-            }
-
-            .basic-section-sticky {
-                position: static !important;
-                top: auto !important;
-                z-index: auto !important;
-                box-shadow: none !important;
-                margin: 0 0 6px 0 !important;
-                border: 1px solid #e0e0e0 !important;
-                background: white !important;
-                page-break-inside: avoid;
-            }
-
-            .sticky-header-row {
-                display: flex !important;
-                justify-content: space-between;
-                padding: 4px 6px !important;
-                margin: 0 !important;
-                border-bottom: 0.5px solid #e0e0e0 !important;
-                page-break-inside: avoid;
-            }
-
-            .sticky-header-item {
-                font-size: 10px !important;
-                color: #000 !important;
-                text-align: left;
-                flex: 1;
-            }
-
-            .sticky-header-label {
-                font-size: 9px !important;
-                font-weight: 600;
-                color: #333 !important;
-                min-width: 70px !important;
             }
 
             .info-item {
                 page-break-inside: avoid;
-                padding: 4px 6px !important;
-                margin: 0 !important;
-                border-bottom: 0.5px solid #e0e0e0 !important;
-                display: flex;
-                justify-content: space-between;
-            }
-
-            .info-label {
-                font-size: 10px !important;
-                font-weight: 600;
-                min-width: 80px !important;
-                color: #333 !important;
-            }
-
-            .info-value {
-                font-size: 10px !important;
-                color: #000 !important;
-                text-align: left;
-                flex: 1;
             }
 
             button {
@@ -318,68 +205,6 @@
             .collapsible-payments-section {
                 max-height: none !important;
                 overflow: visible !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            .collapsible-payments-section.empty-section {
-                display: none !important;
-            }
-
-            .payment-item {
-                padding: 3px 0 !important;
-                margin: 0 !important;
-                font-size: 10px !important;
-            }
-
-            .total {
-                margin: 3px 0 0 0 !important;
-                padding: 3px 0 0 0 !important;
-                border-top: 0.5px solid #333 !important;
-                font-size: 11px !important;
-            }
-
-            .section-header {
-                font-size: 11px !important;
-                margin: 3px 0 3px 0 !important;
-                padding: 2px 0 !important;
-                border-right: 2px solid #3b82f6;
-            }
-
-            main {
-                orphans: 3;
-                widows: 3;
-            }
-
-            .flex {
-                display: flex !important;
-            }
-
-            .gap-4 {
-                gap: 0 !important;
-            }
-
-            .mb-6 {
-                margin-bottom: 4px !important;
-            }
-
-            .mt-6 {
-                margin-top: 4px !important;
-            }
-
-            .mr-3 {
-                margin-right: 2px !important;
-            }
-
-            .text-center {
-                text-align: center;
-            }
-
-            .divider-separator {
-                margin: 6px 0 !important;
-                height: 1px !important;
-                background: #ccc !important;
-                page-break-inside: avoid;
             }
         }
 
@@ -509,32 +334,6 @@
             }
         }
 
-        .payments-scroll {
-            max-height: 300px;
-            overflow-y: auto;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            background-color: white;
-        }
-
-        .payments-scroll::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .payments-scroll::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 10px;
-        }
-
-        .payments-scroll::-webkit-scrollbar-thumb {
-            background: #94a3b8;
-            border-radius: 10px;
-        }
-
-        .payments-scroll::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-
         .salary-card {
             background: var(--card-light);
             border-radius: 16px;
@@ -602,10 +401,6 @@
             opacity: 0;
             margin-bottom: 0;
             padding: 0 16px;
-        }
-
-        .collapsible-payments-section.empty-section {
-            display: none !important;
         }
 
         .collapse-toggle-btn {
@@ -716,10 +511,6 @@
 
         .skip-link:focus {
             top: 0;
-        }
-
-        #export-btn {
-            display: none;
         }
 
         @media (max-width: 640px) {
@@ -858,11 +649,8 @@
                         بيانات الموظف
                     </h2>
                     <div class="flex items-center gap-3 flex-wrap">
-                        <button id="print-btn" class="bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors print-hidden" title="اطبع البيانات">
+                        <button id="print-btn" class="bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors" title="اطبع البيانات">
                             <i class="fas fa-print mr-2" aria-hidden="true"></i>طباعة
-                        </button>
-                        <button id="export-btn" class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors" title="حمل البيانات كـ CSV" disabled>
-                            <i class="fas fa-download mr-2" aria-hidden="true"></i>تحميل
                         </button>
                         <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
                             <i class="fas fa-search mr-2" aria-hidden="true"></i>بحث جديد
@@ -1041,31 +829,14 @@
     <script type="module">
         import { CONFIG } from './config.js';
 
+        // ====================================================
+        //  الأدوات المساعدة (نفس الكود القديم)
+        // ====================================================
+
         let currentUser = null;
         let isPaymentsExpanded = true;
         let autoClearTimer = null;
         const AUTO_CLEAR_TIMEOUT = 30 * 60 * 1000;
-
-        // الحقول الأساسية (بدون البريد الإلكتروني)
-        const basicInfoFields = [
-            'name', 'nationalId', 'jobTitle', 'salary', 'ticketCount'
-        ];
-
-        const basicInfoLabels = {
-            name: 'الاسم',
-            nationalId: 'الرقم القومي',
-            jobTitle: 'الوظيفة',
-            salary: 'المرتب',
-            ticketCount: 'عدد التذاكر'
-        };
-
-        const basicInfoIcons = {
-            name: 'fa-user',
-            nationalId: 'fa-id-card',
-            jobTitle: 'fa-briefcase',
-            salary: 'fa-money-bill',
-            ticketCount: 'fa-ticket'
-        };
 
         function scheduleDataClear() {
             if (autoClearTimer) clearTimeout(autoClearTimer);
@@ -1108,191 +879,503 @@
                 .replace(/'/g, '&#039;');
         }
 
-        function formatCurrency(amount) {
-            if (!amount) return '0.00';
-            return parseFloat(amount).toLocaleString('ar-EG', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
+        function normalizeKey(k) {
+            return k ? k.toString().trim().normalize('NFKC') : '';
         }
 
-        function renderBasicInfo(userData) {
+        function fetchWithTimeout(resource, options = {}) {
+            const { timeout = 10000 } = options;
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeout);
+            return fetch(resource, { ...options, signal: controller.signal })
+                .finally(() => clearTimeout(id));
+        }
+
+        function formatCurrency(value) {
+            if (value === null || value === undefined || value === '') return '—';
+            const num = parseFloat(value);
+            if (isNaN(num)) return String(value);
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ج.م';
+        }
+
+        function formatNumber(value) {
+            if (value === null || value === undefined || value === '') return '—';
+            const num = parseFloat(value);
+            if (isNaN(num)) return String(value);
+            return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        // ====================================================
+        //  التخزين المؤقت (Cache)
+        // ====================================================
+
+        const CACHE_KEY = 'payroll_search_cache';
+        const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
+
+        function getCachedResult(nationalId) {
+            try {
+                const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+                const cached = cache[nationalId];
+                if (cached && Date.now() - cached.timestamp < CACHE_EXPIRY) {
+                    return cached.data;
+                } else if (cached) {
+                    delete cache[nationalId];
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+                }
+            } catch (e) {
+                console.error('Cache read error:', e);
+            }
+            return null;
+        }
+
+        function cacheResult(nationalId, data) {
+            try {
+                const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+                cache[nationalId] = { data, timestamp: Date.now() };
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+            } catch (e) {
+                console.error('Cache write error:', e);
+            }
+        }
+
+        // ====================================================
+        //  البحث (نفس المنطق القديم مع GET)
+        // ====================================================
+
+        async function searchUser(nationalId, email) {
+            try {
+                // التحقق من الـ cache
+                const cached = getCachedResult(nationalId);
+                let result = null;
+
+                if (cached) {
+                    result = cached;
+                    console.log('[Cache] استخدام البيانات المحفوظة');
+                } else {
+                    const url =
+                        `${CONFIG.API_URL}?key=${CONFIG.API_KEY}&nationalId=${encodeURIComponent(nationalId)}`;
+                    const response = await fetchWithTimeout(url, { timeout: 10000 });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    result = await response.json();
+                    if (result.success) cacheResult(nationalId, result);
+                }
+
+                if (result.success) {
+                    const registeredEmail = (result.data['البريد'] || '').trim();
+                    if (registeredEmail && registeredEmail.toLowerCase() === email.toLowerCase()) {
+                        scheduleDataClear();
+                        return { user: result.data, message: 'تم العثور على المستخدم' };
+                    } else if (!registeredEmail) {
+                        scheduleDataClear();
+                        return { user: result.data, message: 'البريد غير مسجل', requiresUpdate: true };
+                    } else {
+                        return { user: null, message: 'البريد الإلكتروني المدخل غير متطابق مع البريد المسجل' };
+                    }
+                } else {
+                    return { user: null, message: result.message || 'لم يتم العثور على المستخدم' };
+                }
+            } catch (error) {
+                console.error('Search failed:', error);
+                return { user: null, message: 'فشل الاتصال بالخادم: ' + error.message };
+            }
+        }
+
+        async function updateUserEmail(nationalId, newEmail) {
+            try {
+                const response = await fetchWithTimeout(CONFIG.API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        key: CONFIG.API_KEY,
+                        nationalId: nationalId,
+                        email: newEmail
+                    }),
+                    timeout: 10000
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const result = await response.json();
+                if (result.success) {
+                    try {
+                        const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+                        delete cache[nationalId];
+                        localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+                    } catch (e) { /* ignore */ }
+                    return { success: true, message: result.message || 'تم التحديث بنجاح' };
+                } else {
+                    return { success: false, message: result.error || 'فشل التحديث' };
+                }
+            } catch (error) {
+                console.error('Update failed:', error);
+                return { success: false, message: 'فشل الاتصال بالخادم: ' + error.message };
+            }
+        }
+
+        // ====================================================
+        //  دوال العرض (بنفس التصميم الجديد)
+        // ====================================================
+
+        function makeInfoRow(label, value, iconClass, isCurrency = false) {
+            const tpl = document.getElementById('info-row-template');
+            const clone = tpl.content.cloneNode(true);
+            const labelEl = clone.querySelector('.info-label');
+            const valueEl = clone.querySelector('.info-value');
+            const infoItem = clone.querySelector('.info-item');
+
+            const safeValue = (value !== null && value !== undefined) ? String(value) : '';
+
+            if (safeValue && safeValue.includes('متأخرات')) {
+                infoItem.classList.add('highlight-red');
+            }
+
+            if (iconClass) {
+                const icon = document.createElement('i');
+                icon.className = `fas ${iconClass} ml-2 text-blue-500`;
+                icon.setAttribute('aria-hidden', 'true');
+                labelEl.appendChild(icon);
+            }
+
+            labelEl.appendChild(document.createTextNode(label));
+
+            if (isCurrency && safeValue !== '—') {
+                valueEl.textContent = formatCurrency(safeValue);
+            } else {
+                valueEl.textContent = safeValue;
+            }
+
+            return clone;
+        }
+
+        function clearElement(el) {
+            while (el.firstChild) el.removeChild(el.firstChild);
+        }
+
+        function togglePaymentSection() {
+            const paymentSection = document.getElementById('payments-section');
+            const toggleBtn = document.getElementById('payments-toggle-btn');
+            isPaymentsExpanded = !isPaymentsExpanded;
+
+            if (isPaymentsExpanded) {
+                paymentSection.classList.remove('collapsed');
+                toggleBtn.classList.remove('collapsed');
+            } else {
+                paymentSection.classList.add('collapsed');
+                toggleBtn.classList.add('collapsed');
+            }
+        }
+
+        // ====================================================
+        //  عرض النتائج المحسّن مع البيانات الحقيقية
+        // ====================================================
+
+        function showResult(user) {
+            document.querySelector('.search-container').style.display = 'none';
+            document.getElementById('instructions-section').style.display = 'none';
+            document.getElementById('error-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+            document.getElementById('result-section').style.animation = 'slideInUp 0.4s ease-out';
+
+            // ===== القسم الأساسي الثابت =====
             const container = document.getElementById('sticky-header-container');
-            container.innerHTML = '';
+            clearElement(container);
 
-            basicInfoFields.forEach(field => {
-                if (basicInfoLabels[field]) {
-                    const value = userData[field] || 'غير متوفر';
-                    const label = basicInfoLabels[field];
-                    const icon = basicInfoIcons[field] || 'fa-info-circle';
+            // عرض الاسم والرقم القومي والدرجة في القسم الثابت
+            const stickyFields = [
+                { key: 'الاسم', label: 'الاسم', icon: 'fa-user' },
+                { key: 'الرقم القومى', label: 'الرقم القومي', icon: 'fa-id-card' },
+                { key: 'الدرجة', label: 'الدرجة', icon: 'fa-star' },
+                { key: 'الحالة الاجتماعية', label: 'الحالة الاجتماعية', icon: 'fa-people-arrows' },
+                { key: 'عدد التذاكر', label: 'عدد التذاكر', icon: 'fa-ticket-alt' }
+            ];
 
+            stickyFields.forEach(field => {
+                let value = user[normalizeKey(field.key)];
+                if (!value && field.key === 'عدد التذاكر') {
+                    value = user['عدد التذاكر'] || user['عدد_التذاكر'] || user['تذاكر'] || '';
+                }
+                if (value) {
                     const row = document.createElement('div');
                     row.className = 'sticky-header-row';
                     row.innerHTML = `
                         <div class="sticky-header-label">
-                            <i class="fas ${icon}" aria-hidden="true"></i>
-                            ${escapeHTML(label)}
+                            <i class="fas ${field.icon}" aria-hidden="true"></i>
+                            ${field.label}
                         </div>
                         <div class="sticky-header-item">${escapeHTML(String(value))}</div>
                     `;
                     container.appendChild(row);
                 }
             });
-        }
 
-        function renderUserData(userData) {
-            const container = document.getElementById('user-data');
-            container.innerHTML = '';
+            // ===== باقي البيانات في قسم "البيانات الإضافية" =====
+            const dataContainer = document.getElementById('user-data');
+            clearElement(dataContainer);
 
-            // عرض البيانات الإضافية (بدون الحقول الأساسية والبريد الإلكتروني)
-            Object.keys(userData).forEach(key => {
-                if (!basicInfoFields.includes(key) && key !== 'email') {
-                    const value = userData[key];
+            // الراتب
+            const salarySection = document.createElement('div');
+            salarySection.className = 'salary-card';
+            const salaryTitle = document.createElement('h3');
+            salaryTitle.className = 'section-header';
+            salaryTitle.innerHTML = '<i class="fas fa-money-bill-wave ml-2" aria-hidden="true"></i> الراتب';
+            salarySection.appendChild(salaryTitle);
 
-                    // تخطي البيانات الفارغة والقيم الخاطئة
-                    if (!value || (typeof value === 'string' && value.trim() === '')) {
-                        return;
-                    }
-
-                    const row = document.querySelector('#info-row-template').content.cloneNode(true);
-                    const label = row.querySelector('.info-label');
-                    const valueEl = row.querySelector('.info-value');
-
-                    label.textContent = escapeHTML(String(key));
-                    valueEl.textContent = escapeHTML(String(value));
-
-                    container.appendChild(row);
+            const salaryFields = ['اساسى 30/6', 'اساسى يوليو 2025'];
+            salaryFields.forEach(key => {
+                let value = user[normalizeKey(key)];
+                if (!value && key === 'اساسى 30/6') {
+                    value = user['اساسى 2014'] || user[normalizeKey('اساسى 2014')];
+                }
+                if (value) {
+                    const row = makeInfoRow(key, value, 'fa-coins', true);
+                    salarySection.appendChild(row);
                 }
             });
-        }
+            dataContainer.appendChild(salarySection);
 
-        function renderPayments(payments) {
-            if (!payments || Object.keys(payments).length === 0) {
-                return null;
-            }
+            // المدفوعات الإضافية (كل ما تبقى)
+            const excludeFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر',
+                'اساسى 30/6', 'اساسى يوليو 2025', 'اساسى 2014', 'البريد'
+            ];
 
-            const paymentsDiv = document.createElement('div');
-            paymentsDiv.className = 'salary-card';
-            paymentsDiv.innerHTML = `
-                <button class="collapse-toggle-btn" type="button" aria-expanded="true">
-                    <span class="section-header flex items-center">
-                        <i class="fas fa-wallet mr-2" aria-hidden="true"></i>
-                        تفاصيل الراتب والمدفوعات
-                    </span>
-                    <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
-                </button>
-                <div class="collapsible-payments-section">
-                    <div class="payments-scroll">
-                        ${Object.entries(payments)
-                            .map(([key, value]) => {
-                                if (!value || (typeof value === 'string' && value.trim() === '')) {
-                                    return '';
-                                }
-                                return `
-                                    <div class="payment-item">
-                                        <span>${escapeHTML(String(key))}</span>
-                                        <span class="amount">${escapeHTML(String(value))}</span>
-                                    </div>
-                                `;
-                            })
-                            .join('')}
-                    </div>
-                </div>
-            `;
+            let hasPayments = false;
+            const paymentItems = [];
 
-            const toggleBtn = paymentsDiv.querySelector('.collapse-toggle-btn');
-            const collapsible = paymentsDiv.querySelector('.collapsible-payments-section');
-
-            toggleBtn.addEventListener('click', () => {
-                collapsible.classList.toggle('collapsed');
-                toggleBtn.classList.toggle('collapsed');
-                toggleBtn.setAttribute('aria-expanded', toggleBtn.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+            Object.keys(user).forEach(key => {
+                const normalized = normalizeKey(key);
+                if (!excludeFields.some(f => normalizeKey(f) === normalized)) {
+                    const value = user[key];
+                    if (value) {
+                        hasPayments = true;
+                        paymentItems.push({ key, value });
+                    }
+                }
             });
 
-            return paymentsDiv;
-        }
+            if (hasPayments) {
+                // زر طي المدفوعات
+                const toggleBtn = document.createElement('button');
+                toggleBtn.id = 'payments-toggle-btn';
+                toggleBtn.className = 'collapse-toggle-btn';
+                toggleBtn.type = 'button';
+                toggleBtn.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas fa-list-ul ml-2" aria-hidden="true"></i>
+                        <span>المدفوعات الإضافية</span>
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
+                `;
+                toggleBtn.addEventListener('click', togglePaymentSection);
+                dataContainer.appendChild(toggleBtn);
 
-        async function displayUserData(userData) {
-            renderBasicInfo(userData);
-            renderUserData(userData);
+                // قسم المدفوعات
+                const paymentsSection = document.createElement('div');
+                paymentsSection.id = 'payments-section';
+                paymentsSection.className = 'collapsible-payments-section salary-card';
 
-            const userDataContainer = document.getElementById('user-data');
+                let totalPayments = 0;
+                const paymentList = document.createElement('div');
+                paymentList.className = 'divide-y divide-slate-100';
 
-            // إضافة فاصل
-            const divider = document.createElement('div');
-            divider.className = 'divider-separator';
-            userDataContainer.appendChild(divider);
+                paymentItems.forEach(({ key, value }) => {
+                    const numValue = parseFloat(value);
+                    if (!isNaN(numValue)) totalPayments += numValue;
+                    const row = document.createElement('div');
+                    row.className = 'payment-item';
+                    row.innerHTML = `
+                        <span class="font-medium text-slate-700">${escapeHTML(key)}</span>
+                        <span class="amount">${formatCurrency(value)}</span>
+                    `;
+                    paymentList.appendChild(row);
+                });
 
-            // عرض الرواتب والمدفوعات إذا كانت موجودة
-            const paymentsDiv = renderPayments(userData.payments);
-            if (paymentsDiv) {
-                userDataContainer.appendChild(paymentsDiv);
+                paymentsSection.appendChild(paymentList);
+
+                // إجمالي المدفوعات
+                const totalRow = document.createElement('div');
+                totalRow.className = 'total';
+                totalRow.innerHTML = `
+                    <strong>الإجمالي:</strong>
+                    <strong class="amount">${formatCurrency(totalPayments)}</strong>
+                `;
+                paymentsSection.appendChild(totalRow);
+
+                dataContainer.appendChild(paymentsSection);
+                isPaymentsExpanded = true;
+            } else {
+                // إذا لم تكن هناك مدفوعات إضافية
+                const emptyMsg = document.createElement('p');
+                emptyMsg.className = 'text-slate-500 text-center py-4';
+                emptyMsg.textContent = 'لا توجد مدفوعات إضافية مسجلة.';
+                dataContainer.appendChild(emptyMsg);
             }
         }
 
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // ====================================================
+        //  باقي دوال الواجهة (نافذة البريد، الأحداث، إلخ)
+        // ====================================================
 
+        function showError(message) {
+            document.querySelector('.search-container').style.display = 'block';
+            document.getElementById('instructions-section').style.display = 'block';
+            document.getElementById('result-section').style.display = 'none';
+            const err = document.getElementById('error-section');
+            document.getElementById('error-message').textContent = message;
+            err.style.display = 'block';
+        }
+
+        function openEmailModal(nationalId, hasEmail, prefilledEmail = '') {
+            const modal = document.getElementById('email-modal');
+            document.getElementById('user-national-id').textContent = nationalId;
+            const messageEl = document.getElementById('modal-message');
+            if (hasEmail) {
+                messageEl.textContent = 'تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.';
+            } else {
+                messageEl.textContent = 'لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال البريد الإلكتروني.';
+            }
+            document.getElementById('new-email-input').value = prefilledEmail || '';
+            document.getElementById('confirm-email-input').value = '';
+            document.getElementById('email-modal-overlay').style.display = 'block';
+            modal.style.display = 'block';
+            document.getElementById('new-email-input').focus();
+        }
+
+        function closeEmailModal() {
+            const modal = document.getElementById('email-modal');
+            modal.style.display = 'none';
+            document.getElementById('email-modal-overlay').style.display = 'none';
+            document.getElementById('new-email-input').value = '';
+            document.getElementById('confirm-email-input').value = '';
+            document.getElementById('email-error').classList.add('hidden');
+            document.getElementById('email-input').focus();
+        }
+
+        // ====================================================
+        //  ربط الأحداث
+        // ====================================================
+
+        document.getElementById('new-search-btn').addEventListener('click', function() {
+            clearAllData();
+            document.getElementById('email-input').focus();
+        });
+
+        document.getElementById('print-btn')?.addEventListener('click', function() {
+            window.print();
+        });
+
+        document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
+        document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
+        document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('email-modal');
+                if (modal && modal.style.display === 'block') closeEmailModal();
+            }
+        });
+
+        // نموذج البحث
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
             const email = document.getElementById('email-input').value.trim();
             const nationalId = document.getElementById('national-id-input').value.trim();
 
-            if (!email || !nationalId) {
-                showError('الرجاء ملء جميع الحقول المطلوبة');
-                return;
-            }
+            document.getElementById('email-input').classList.remove('input-error');
+            document.getElementById('national-id-input').classList.remove('input-error');
+            document.getElementById('error-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'none';
+            document.getElementById('update-success').style.display = 'none';
 
             if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
-                showError('الرقم القومي يجب أن يكون 14 رقمًا');
+                showError('الرقم القومي يجب أن يتكون من 14 رقمًا فقط.');
+                document.getElementById('national-id-input').classList.add('input-error');
                 return;
             }
 
-            const searchBtn = document.getElementById('search-btn');
-            searchBtn.disabled = true;
-            searchBtn.innerHTML = '<i class="loading-spinner"></i>جاري البحث...';
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('صيغة البريد الإلكتروني غير صحيحة.');
+                document.getElementById('email-input').classList.add('input-error');
+                return;
+            }
 
-            try {
-                const response = await fetch(`${CONFIG.API_URL}search`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, nationalId })
-                });
+            const btn = document.getElementById('search-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري البحث...';
 
-                if (!response.ok) {
-                    throw new Error('فشل البحث عن البيانات');
+            const result = await searchUser(nationalId, email);
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-search mr-2" aria-hidden="true"></i> البحث';
+
+            if (result.user) {
+                currentUser = result.user;
+                if (result.requiresUpdate) {
+                    openEmailModal(nationalId, false, email);
+                } else {
+                    showResult(result.user);
                 }
-
-                const data = await response.json();
-                currentUser = data;
-
-                document.getElementById('error-section').style.display = 'none';
-                document.getElementById('result-section').style.display = 'block';
-                document.querySelector('.search-container').style.display = 'none';
-                document.getElementById('instructions-section').style.display = 'none';
-
-                await displayUserData(data);
-                scheduleDataClear();
-
-            } catch (error) {
-                showError(error.message || 'حدث خطأ أثناء البحث');
-            } finally {
-                searchBtn.disabled = false;
-                searchBtn.innerHTML = '<i class="fas fa-search mr-2" aria-hidden="true"></i>البحث';
+            } else {
+                showError(result.message);
             }
         });
 
-        function showError(message) {
-            const errorSection = document.getElementById('error-section');
-            const errorMessage = document.getElementById('error-message');
-            errorMessage.textContent = message;
-            errorSection.style.display = 'block';
-        }
+        // نموذج تحديث البريد
+        document.getElementById('email-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('new-email-input').value.trim();
+            const confirmEmail = document.getElementById('confirm-email-input').value.trim();
+            const errorElement = document.getElementById('email-error');
+            const nationalId = document.getElementById('user-national-id').textContent;
 
-        document.getElementById('new-search-btn').addEventListener('click', () => {
-            clearAllData();
+            errorElement.classList.add('hidden');
+
+            if (email !== confirmEmail) {
+                document.getElementById('email-error-message').textContent = 'البريد الإلكتروني وتأكيده غير متطابقين.';
+                errorElement.classList.remove('hidden');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('email-error-message').textContent = 'صيغة البريد الإلكتروني غير صحيحة.';
+                errorElement.classList.remove('hidden');
+                return;
+            }
+
+            const saveBtn = document.getElementById('save-email-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري الحفظ...';
+
+            const updateResult = await updateUserEmail(nationalId, email);
+
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = 'حفظ البريد';
+
+            if (updateResult.success) {
+                if (currentUser) currentUser['البريد'] = email;
+                closeEmailModal();
+                showResult(currentUser);
+                const success = document.getElementById('update-success');
+                success.style.display = 'flex';
+                setTimeout(() => success.style.display = 'none', 5000);
+            } else {
+                document.getElementById('email-error-message').textContent = updateResult.message;
+                errorElement.classList.remove('hidden');
+            }
         });
 
-        document.getElementById('print-btn').addEventListener('click', () => {
-            window.print();
+        // استعادة آخر بريد
+        try {
+            const lastEmail = localStorage.getItem('last_used_email');
+            if (lastEmail) {
+                document.getElementById('email-input').value = lastEmail;
+            }
+        } catch (e) { /* ignore */ }
+
+        document.getElementById('login-form').addEventListener('submit', function() {
+            try {
+                const email = document.getElementById('email-input').value.trim();
+                localStorage.setItem('last_used_email', email);
+            } catch (e) { /* ignore */ }
         });
     </script>
 </body>
