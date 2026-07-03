@@ -102,6 +102,11 @@
             .divider-separator {
                 background-color: #4a5568 !important;
             }
+
+            .basic-section-sticky {
+                background: #2d3748 !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+            }
         }
 
         .search-container {
@@ -184,7 +189,8 @@
             #new-search-btn,
             #print-btn,
             #export-btn,
-            .highlight-box {
+            .highlight-box,
+            #result-section > div:first-child {
                 display: none !important;
             }
 
@@ -244,6 +250,40 @@
                 padding: 6px !important;
             }
 
+            .basic-section-sticky {
+                position: static !important;
+                top: auto !important;
+                z-index: auto !important;
+                box-shadow: none !important;
+                margin: 0 0 6px 0 !important;
+                border: 1px solid #e0e0e0 !important;
+                background: white !important;
+                page-break-inside: avoid;
+            }
+
+            .sticky-header-row {
+                display: flex !important;
+                justify-content: space-between;
+                padding: 4px 6px !important;
+                margin: 0 !important;
+                border-bottom: 0.5px solid #e0e0e0 !important;
+                page-break-inside: avoid;
+            }
+
+            .sticky-header-item {
+                font-size: 10px !important;
+                color: #000 !important;
+                text-align: left;
+                flex: 1;
+            }
+
+            .sticky-header-label {
+                font-size: 9px !important;
+                font-weight: 600;
+                color: #333 !important;
+                min-width: 70px !important;
+            }
+
             .info-item {
                 page-break-inside: avoid;
                 padding: 4px 6px !important;
@@ -280,6 +320,10 @@
                 overflow: visible !important;
                 margin: 0 !important;
                 padding: 0 !important;
+            }
+
+            .collapsible-payments-section.empty-section {
+                display: none !important;
             }
 
             .payment-item {
@@ -336,13 +380,6 @@
                 height: 1px !important;
                 background: #ccc !important;
                 page-break-inside: avoid;
-            }
-
-            .basic-section-sticky {
-                position: static !important;
-                top: auto !important;
-                z-index: auto !important;
-                box-shadow: none !important;
             }
         }
 
@@ -522,6 +559,38 @@
             margin-bottom: 16px;
         }
 
+        .sticky-header-container {
+            display: grid;
+            gap: 8px;
+        }
+
+        .sticky-header-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 16px;
+            align-items: center;
+            padding: 12px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .sticky-header-label {
+            color: #1e40af;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sticky-header-item {
+            color: #0f172a;
+            font-weight: 600;
+            word-break: break-word;
+            direction: ltr;
+        }
+
         .collapsible-payments-section {
             overflow: hidden;
             animation: slideDown 0.4s ease-out;
@@ -533,6 +602,10 @@
             opacity: 0;
             margin-bottom: 0;
             padding: 0 16px;
+        }
+
+        .collapsible-payments-section.empty-section {
+            display: none !important;
         }
 
         .collapse-toggle-btn {
@@ -668,6 +741,10 @@
                 width: 100%;
             }
 
+            .sticky-header-row {
+                grid-template-columns: 1fr;
+            }
+
             .payment-item {
                 flex-direction: column;
                 align-items: flex-start;
@@ -797,6 +874,14 @@
                     </div>
                 </div>
 
+                <!-- القسم الأساسي الثابت -->
+                <div id="basic-info-section" class="basic-section-sticky">
+                    <div class="sticky-header-container" id="sticky-header-container">
+                        <!-- سيتم ملء هذا ديناميكياً -->
+                    </div>
+                </div>
+
+                <!-- البيانات الإضافية -->
                 <div id="user-data"></div>
 
                 <div class="highlight-box mt-6">
@@ -961,6 +1046,27 @@
         let autoClearTimer = null;
         const AUTO_CLEAR_TIMEOUT = 30 * 60 * 1000;
 
+        // الحقول الأساسية (بدون البريد الإلكتروني)
+        const basicInfoFields = [
+            'name', 'nationalId', 'jobTitle', 'salary', 'ticketCount'
+        ];
+
+        const basicInfoLabels = {
+            name: 'الاسم',
+            nationalId: 'الرقم القومي',
+            jobTitle: 'الوظيفة',
+            salary: 'المرتب',
+            ticketCount: 'عدد التذاكر'
+        };
+
+        const basicInfoIcons = {
+            name: 'fa-user',
+            nationalId: 'fa-id-card',
+            jobTitle: 'fa-briefcase',
+            salary: 'fa-money-bill',
+            ticketCount: 'fa-ticket'
+        };
+
         function scheduleDataClear() {
             if (autoClearTimer) clearTimeout(autoClearTimer);
             autoClearTimer = setTimeout(() => {
@@ -999,365 +1105,194 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+                .replace(/'/g, '&#039;');
         }
 
-        function normalizeKey(k) {
-            return k ? k.toString().trim().normalize('NFKC') : '';
+        function formatCurrency(amount) {
+            if (!amount) return '0.00';
+            return parseFloat(amount).toLocaleString('ar-EG', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         }
 
-        function fetchWithTimeout(resource, options = {}) {
-            const { timeout = 10000 } = options;
-            const controller = new AbortController();
-            const id = setTimeout(() => controller.abort(), timeout);
-            return fetch(resource, { ...options, signal: controller.signal })
-                .finally(() => clearTimeout(id));
-        }
+        function renderBasicInfo(userData) {
+            const container = document.getElementById('sticky-header-container');
+            container.innerHTML = '';
 
-        function formatCurrency(value) {
-            if (value === null || value === undefined || value === '') return '—';
-            const num = parseFloat(value);
-            if (isNaN(num)) return String(value);
-            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ج.م';
-        }
+            basicInfoFields.forEach(field => {
+                if (basicInfoLabels[field]) {
+                    const value = userData[field] || 'غير متوفر';
+                    const label = basicInfoLabels[field];
+                    const icon = basicInfoIcons[field] || 'fa-info-circle';
 
-        function formatNumber(value) {
-            if (value === null || value === undefined || value === '') return '—';
-            const num = parseFloat(value);
-            if (isNaN(num)) return String(value);
-            return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-
-        const CACHE_KEY = 'payroll_search_cache';
-        const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
-
-        function getCachedResult(nationalId) {
-            try {
-                const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
-                const cached = cache[nationalId];
-                if (cached && Date.now() - cached.timestamp < CACHE_EXPIRY) {
-                    return cached.data;
-                } else if (cached) {
-                    delete cache[nationalId];
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+                    const row = document.createElement('div');
+                    row.className = 'sticky-header-row';
+                    row.innerHTML = `
+                        <div class="sticky-header-label">
+                            <i class="fas ${icon}" aria-hidden="true"></i>
+                            ${escapeHTML(label)}
+                        </div>
+                        <div class="sticky-header-item">${escapeHTML(String(value))}</div>
+                    `;
+                    container.appendChild(row);
                 }
-            } catch (e) {
-                console.error('Cache read error:', e);
-            }
-            return null;
+            });
         }
 
-        function cacheResult(nationalId, data) {
-            try {
-                const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
-                cache[nationalId] = { data, timestamp: Date.now() };
-                localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-            } catch (e) {
-                console.error('Cache write error:', e);
-            }
-        }
+        function renderUserData(userData) {
+            const container = document.getElementById('user-data');
+            container.innerHTML = '';
 
-        async function searchUser(nationalId, email) {
-            try {
-                const cached = getCachedResult(nationalId);
-                let result = null;
+            // عرض البيانات الإضافية (بدون الحقول الأساسية والبريد الإلكتروني)
+            Object.keys(userData).forEach(key => {
+                if (!basicInfoFields.includes(key) && key !== 'email') {
+                    const value = userData[key];
 
-                if (cached) {
-                    result = cached;
-                    console.log('[Cache] استخدام البيانات المحفوظة');
-                } else {
-                    const url =
-                        `${CONFIG.API_URL}?key=${CONFIG.API_KEY}&nationalId=${encodeURIComponent(nationalId)}`;
-                    const response = await fetchWithTimeout(url, { timeout: 10000 });
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    result = await response.json();
-                    if (result.success) cacheResult(nationalId, result);
-                }
-
-                if (result.success) {
-                    const registeredEmail = (result.data['البريد'] || '').trim();
-                    if (registeredEmail && registeredEmail.toLowerCase() === email.toLowerCase()) {
-                        scheduleDataClear();
-                        return { user: result.data, message: 'تم العثور على المستخدم' };
-                    } else if (!registeredEmail) {
-                        scheduleDataClear();
-                        return { user: result.data, message: 'البريد غير مسجل', requiresUpdate: true };
-                    } else {
-                        return { user: null, message: 'البريد الإلكتروني المدخل غير متطابق مع البريد المسجل' };
+                    // تخطي البيانات الفارغة والقيم الخاطئة
+                    if (!value || (typeof value === 'string' && value.trim() === '')) {
+                        return;
                     }
-                } else {
-                    return { user: null, message: result.message || 'لم يتم العثور على المستخدم' };
+
+                    const row = document.querySelector('#info-row-template').content.cloneNode(true);
+                    const label = row.querySelector('.info-label');
+                    const valueEl = row.querySelector('.info-value');
+
+                    label.textContent = escapeHTML(String(key));
+                    valueEl.textContent = escapeHTML(String(value));
+
+                    container.appendChild(row);
                 }
-            } catch (error) {
-                console.error('Search failed:', error);
-                return { user: null, message: 'فشل الاتصال بالخادم: ' + error.message };
-            }
+            });
         }
 
-        async function updateUserEmail(nationalId, newEmail) {
-            try {
-                const response = await fetchWithTimeout(CONFIG.API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        key: CONFIG.API_KEY,
-                        nationalId: nationalId,
-                        email: newEmail
-                    }),
-                    timeout: 10000
-                });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const result = await response.json();
-                if (result.success) {
-                    try {
-                        const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
-                        delete cache[nationalId];
-                        localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-                    } catch (e) {
-                        console.error('Cache clear error:', e);
-                    }
-                    return { success: true, message: result.message || 'تم التحديث بنجاح' };
-                } else {
-                    return { success: false, message: result.error || 'فشل التحديث' };
-                }
-            } catch (error) {
-                console.error('Update failed:', error);
-                return { success: false, message: 'فشل الاتصال بالخادم: ' + error.message };
-            }
-        }
-
-        function makeInfoRow(label, value, iconClass, isCurrency = false) {
-            const tpl = document.getElementById('info-row-template');
-            const clone = tpl.content.cloneNode(true);
-            const labelEl = clone.querySelector('.info-label');
-            const valueEl = clone.querySelector('.info-value');
-            const infoItem = clone.querySelector('.info-item');
-
-            const safeValue = (value !== null && value !== undefined) ? String(value) : '';
-
-            if (safeValue && safeValue.includes('متأخرات')) {
-                infoItem.classList.add('highlight-red');
+        function renderPayments(payments) {
+            if (!payments || Object.keys(payments).length === 0) {
+                return null;
             }
 
-            if (iconClass) {
-                const icon = document.createElement('i');
-                icon.className = `fas ${iconClass} ml-2 text-blue-500`;
-                icon.setAttribute('aria-hidden', 'true');
-                labelEl.appendChild(icon);
-            }
+            const paymentsDiv = document.createElement('div');
+            paymentsDiv.className = 'salary-card';
+            paymentsDiv.innerHTML = `
+                <button class="collapse-toggle-btn" type="button" aria-expanded="true">
+                    <span class="section-header flex items-center">
+                        <i class="fas fa-wallet mr-2" aria-hidden="true"></i>
+                        تفاصيل الراتب والمدفوعات
+                    </span>
+                    <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
+                </button>
+                <div class="collapsible-payments-section">
+                    <div class="payments-scroll">
+                        ${Object.entries(payments)
+                            .map(([key, value]) => {
+                                if (!value || (typeof value === 'string' && value.trim() === '')) {
+                                    return '';
+                                }
+                                return `
+                                    <div class="payment-item">
+                                        <span>${escapeHTML(String(key))}</span>
+                                        <span class="amount">${escapeHTML(String(value))}</span>
+                                    </div>
+                                `;
+                            })
+                            .join('')}
+                    </div>
+                </div>
+            `;
 
-            labelEl.appendChild(document.createTextNode(label));
+            const toggleBtn = paymentsDiv.querySelector('.collapse-toggle-btn');
+            const collapsible = paymentsDiv.querySelector('.collapsible-payments-section');
 
-            if (isCurrency && safeValue !== '—') {
-                valueEl.textContent = formatCurrency(safeValue);
-            } else {
-                valueEl.textContent = safeValue;
-            }
+            toggleBtn.addEventListener('click', () => {
+                collapsible.classList.toggle('collapsed');
+                toggleBtn.classList.toggle('collapsed');
+                toggleBtn.setAttribute('aria-expanded', toggleBtn.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+            });
 
-            return clone;
-        }
-
-        function clearElement(el) {
-            while (el.firstChild) el.removeChild(el.firstChild);
-        }
-
-        function togglePaymentSection() {
-            const paymentSection = document.getElementById('payments-section');
-            if (!paymentSection) return;
-
-            isPaymentsExpanded = !isPaymentsExpanded;
-            const btn = document.getElementById('collapse-payments-btn');
-
-            if (isPaymentsExpanded) {
-                paymentSection.classList.remove('collapsed');
-                btn?.classList.remove('collapsed');
-            } else {
-                paymentSection.classList.add('collapsed');
-                btn?.classList.add('collapsed');
-            }
+            return paymentsDiv;
         }
 
         async function displayUserData(userData) {
-            const userDataEl = document.getElementById('user-data');
-            if (!userDataEl) return;
+            renderBasicInfo(userData);
+            renderUserData(userData);
 
-            clearElement(userDataEl);
-            currentUser = userData;
+            const userDataContainer = document.getElementById('user-data');
 
-            const basicDataDiv = document.createElement('div');
-            basicDataDiv.className = 'basic-section-sticky';
-
-            const basicFields = ['الاسم', 'الرقم القومي', 'الوظيفة', 'الراتب الأساسي'];
-
-            basicFields.forEach(field => {
-                if (userData[field] !== undefined && userData[field] !== null) {
-                    basicDataDiv.appendChild(
-                        makeInfoRow(field, userData[field], null, field === 'الراتب الأساسي')
-                    );
-                }
-            });
-
-            userDataEl.appendChild(basicDataDiv);
-
-            // أضفنا الفاصل بعد البيانات الأساسية
+            // إضافة فاصل
             const divider = document.createElement('div');
             divider.className = 'divider-separator';
-            userDataEl.appendChild(divider);
+            userDataContainer.appendChild(divider);
 
-            // باقي البيانات
-            const otherDataDiv = document.createElement('div');
-            otherDataDiv.className = 'salary-card';
-
-            Object.keys(userData).forEach(key => {
-                if (!basicFields.includes(key)) {
-                    otherDataDiv.appendChild(
-                        makeInfoRow(key, userData[key], null, key.includes('مبلغ') || key.includes('راتب'))
-                    );
-                }
-            });
-
-            userDataEl.appendChild(otherDataDiv);
+            // عرض الرواتب والمدفوعات إذا كانت موجودة
+            const paymentsDiv = renderPayments(userData.payments);
+            if (paymentsDiv) {
+                userDataContainer.appendChild(paymentsDiv);
+            }
         }
 
-        function showError(message) {
-            const errorSection = document.getElementById('error-section');
-            const errorMessage = document.getElementById('error-message');
-            if (errorMessage) errorMessage.textContent = message;
-            if (errorSection) errorSection.style.display = 'block';
-        }
-
-        function hideError() {
-            const errorSection = document.getElementById('error-section');
-            if (errorSection) errorSection.style.display = 'none';
-        }
-
-        function showResults() {
-            document.querySelector('.search-container').style.display = 'none';
-            document.getElementById('instructions-section').style.display = 'none';
-            document.getElementById('result-section').style.display = 'block';
-        }
-
-        document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            hideError();
 
-            const email = document.getElementById('email-input')?.value.trim() || '';
-            const nationalId = document.getElementById('national-id-input')?.value.trim() || '';
+            const email = document.getElementById('email-input').value.trim();
+            const nationalId = document.getElementById('national-id-input').value.trim();
 
             if (!email || !nationalId) {
-                showError('يجب إدخال البريد الإلكتروني والرقم القومي');
+                showError('الرجاء ملء جميع الحقول المطلوبة');
                 return;
             }
 
-            if (nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
-                showError('الرقم القومي يجب أن يكون 14 رقم فقط');
+            if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
+                showError('الرقم القومي يجب أن يكون 14 رقمًا');
                 return;
             }
 
             const searchBtn = document.getElementById('search-btn');
-            if (searchBtn) {
-                searchBtn.disabled = true;
-                searchBtn.innerHTML = '<span class="loading-spinner"></span> جاري البحث...';
-            }
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = '<i class="loading-spinner"></i>جاري البحث...';
 
-            const result = await searchUser(nationalId, email);
-            if (searchBtn) {
+            try {
+                const response = await fetch(`${CONFIG.API_URL}search`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, nationalId })
+                });
+
+                if (!response.ok) {
+                    throw new Error('فشل البحث عن البيانات');
+                }
+
+                const data = await response.json();
+                currentUser = data;
+
+                document.getElementById('error-section').style.display = 'none';
+                document.getElementById('result-section').style.display = 'block';
+                document.querySelector('.search-container').style.display = 'none';
+                document.getElementById('instructions-section').style.display = 'none';
+
+                await displayUserData(data);
+                scheduleDataClear();
+
+            } catch (error) {
+                showError(error.message || 'حدث خطأ أثناء البحث');
+            } finally {
                 searchBtn.disabled = false;
                 searchBtn.innerHTML = '<i class="fas fa-search mr-2" aria-hidden="true"></i>البحث';
             }
-
-            if (result.user) {
-                await displayUserData(result.user);
-                showResults();
-
-                if (result.requiresUpdate) {
-                    setTimeout(() => {
-                        document.getElementById('user-national-id').textContent = nationalId;
-                        document.getElementById('email-modal-overlay').style.display = 'block';
-                        document.getElementById('email-modal').style.display = 'block';
-                    }, 300);
-                }
-            } else {
-                showError(result.message);
-            }
         });
 
-        document.getElementById('print-btn')?.addEventListener('click', () => {
+        function showError(message) {
+            const errorSection = document.getElementById('error-section');
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorSection.style.display = 'block';
+        }
+
+        document.getElementById('new-search-btn').addEventListener('click', () => {
+            clearAllData();
+        });
+
+        document.getElementById('print-btn').addEventListener('click', () => {
             window.print();
-        });
-
-        document.getElementById('new-search-btn')?.addEventListener('click', () => {
-            document.getElementById('result-section').style.display = 'none';
-            document.querySelector('.search-container').style.display = 'block';
-            document.getElementById('instructions-section').style.display = 'block';
-            document.getElementById('email-input').value = '';
-            document.getElementById('national-id-input').value = '';
-            hideError();
-        });
-
-        document.getElementById('close-email-modal')?.addEventListener('click', () => {
-            document.getElementById('email-modal-overlay').style.display = 'none';
-            document.getElementById('email-modal').style.display = 'none';
-        });
-
-        document.getElementById('cancel-email-btn')?.addEventListener('click', () => {
-            document.getElementById('email-modal-overlay').style.display = 'none';
-            document.getElementById('email-modal').style.display = 'none';
-        });
-
-        document.getElementById('email-modal-overlay')?.addEventListener('click', () => {
-            document.getElementById('email-modal-overlay').style.display = 'none';
-            document.getElementById('email-modal').style.display = 'none';
-        });
-
-        document.getElementById('email-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const emailError = document.getElementById('email-error');
-            const newEmail = document.getElementById('new-email-input')?.value.trim() || '';
-            const confirmEmail = document.getElementById('confirm-email-input')?.value.trim() || '';
-
-            if (newEmail !== confirmEmail) {
-                if (emailError) {
-                    document.getElementById('email-error-message').textContent = 'البريد الإلكتروني غير متطابق';
-                    emailError.classList.remove('hidden');
-                }
-                return;
-            }
-
-            if (emailError) emailError.classList.add('hidden');
-
-            const nationalId = document.getElementById('user-national-id')?.textContent || '';
-            const saveBtn = document.getElementById('save-email-btn');
-            if (saveBtn) {
-                saveBtn.disabled = true;
-                saveBtn.innerHTML = '<span class="loading-spinner"></span> جاري الحفظ...';
-            }
-
-            const result = await updateUserEmail(nationalId, newEmail);
-            if (saveBtn) {
-                saveBtn.disabled = false;
-                saveBtn.innerHTML = 'حفظ البريد';
-            }
-
-            if (result.success) {
-                document.getElementById('email-modal-overlay').style.display = 'none';
-                document.getElementById('email-modal').style.display = 'none';
-                document.getElementById('new-email-input').value = '';
-                document.getElementById('confirm-email-input').value = '';
-
-                const successBadge = document.getElementById('update-success');
-                if (successBadge) {
-                    successBadge.style.display = 'inline-flex';
-                    setTimeout(() => {
-                        successBadge.style.display = 'none';
-                    }, 5000);
-                }
-            } else {
-                if (emailError) {
-                    document.getElementById('email-error-message').textContent = result.message;
-                    emailError.classList.remove('hidden');
-                }
-            }
         });
     </script>
 </body>
