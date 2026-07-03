@@ -98,6 +98,10 @@
             .collapse-toggle-btn:hover {
                 background: #3a4556;
             }
+
+            .divider-separator {
+                background-color: #4a5568 !important;
+            }
         }
 
         .search-container {
@@ -325,6 +329,12 @@
 
             .text-center {
                 text-align: center;
+            }
+
+            .divider-separator {
+                margin: 6px 0 !important;
+                height: 1px !important;
+                background: #ccc !important;
             }
         }
 
@@ -587,6 +597,13 @@
             border-right: 4px solid #3b82f6;
         }
 
+        .divider-separator {
+            height: 2px;
+            background: linear-gradient(to right, #e0e7ff, transparent);
+            margin: 16px 0;
+            border-radius: 1px;
+        }
+
         .data-clear-notification {
             position: fixed;
             bottom: 20px;
@@ -613,6 +630,10 @@
 
         .skip-link:focus {
             top: 0;
+        }
+
+        #export-btn {
+            display: none;
         }
 
         @media (max-width: 640px) {
@@ -672,6 +693,10 @@
             .data-clear-notification {
                 left: 10px;
                 right: 10px;
+            }
+
+            .divider-separator {
+                margin: 12px 0;
             }
         }
     </style>
@@ -742,7 +767,7 @@
                         <button id="print-btn" class="bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors print-hidden" title="اطبع البيانات">
                             <i class="fas fa-print mr-2" aria-hidden="true"></i>طباعة
                         </button>
-                        <button id="export-btn" class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors" title="حمل البيانات كـ CSV">
+                        <button id="export-btn" class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors" title="حمل البيانات كـ CSV" disabled>
                             <i class="fas fa-download mr-2" aria-hidden="true"></i>تحميل
                         </button>
                         <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
@@ -1194,6 +1219,11 @@
 
             userDataDiv.appendChild(basicSection);
 
+            // إضافة الفاصل البسيط
+            const divider = document.createElement('div');
+            divider.className = 'divider-separator';
+            userDataDiv.appendChild(divider);
+
             if (requiresUpdate) {
                 const updateBtn = document.createElement('button');
                 updateBtn.type = 'button';
@@ -1240,20 +1270,10 @@
             document.getElementById('email-input').focus();
         });
 
-        document.getElementById('export-btn').addEventListener('click', () => {
-            if (!currentUser) {
-                alert('لا توجد بيانات للتحميل');
-                return;
-            }
-
-            const csv = Object.keys(currentUser)
-                .map(key => `"${key}","${String(currentUser[key]).replace(/"/g, '""')}"`)
-                .join('\n');
-
-            const link = document.createElement('a');
-            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-            link.download = 'employee-data.csv';
-            link.click();
+        // تعطيل زر التحميل مؤقتًا - سيتم تفعيله لاحقًا
+        document.getElementById('export-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('زر التحميل معطل حاليًا ويتم إعداده. سيتم تفعيله قريبًا!');
         });
 
         document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
