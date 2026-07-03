@@ -1,3 +1,4 @@
+@@ -1,1306 +1,1310 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -8,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ========== نفس الأنماط السابقة ========== */
         * {
             color-scheme: light dark;
         }
@@ -16,7 +16,10 @@
         :root {
             --bg-light: #f0f4ff;
             --bg-light-2: #e6f0ff;
+            --bg-dark: #1a1f3a;
+            --bg-dark-2: #16213e;
             --text-light: #0f172a;
+            --text-dark: #e0e0e0;
             --card-light: #ffffff;
             --card-dark: #2d3748;
         }
@@ -96,11 +99,6 @@
             .collapse-toggle-btn:hover {
                 background: #3a4556;
             }
-
-            .basic-section-sticky {
-                background: #2d3748 !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-            }
         }
 
         .search-container {
@@ -168,6 +166,16 @@
         }
 
         @media print {
+            * {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
             .search-container,
             .instructions-section,
             #new-search-btn,
@@ -180,6 +188,47 @@
             body {
                 background: white !important;
                 color: black !important;
+                font-size: 11px !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                padding: 8px !important;
+                margin: 0 !important;
+            }
+
+            header {
+                margin-bottom: 8px !important;
+                page-break-after: avoid;
+            }
+
+            h1 {
+                font-size: 16px !important;
+                margin: 0 0 4px 0 !important;
+                page-break-after: avoid;
+            }
+
+            h2 {
+                font-size: 13px !important;
+                margin: 0 0 6px 0 !important;
+                page-break-after: avoid;
+            }
+
+            h3 {
+                font-size: 12px !important;
+                margin: 0 0 4px 0 !important;
+                page-break-after: avoid;
+            }
+
+            h4 {
+                font-size: 11px !important;
+                margin: 0 0 3px 0 !important;
+                page-break-after: avoid;
+            }
+
+            p {
+                margin: 0 0 3px 0 !important;
+                page-break-inside: avoid;
             }
 
             .salary-card,
@@ -188,10 +237,31 @@
                 box-shadow: none !important;
                 border: 1px solid #e0e0e0;
                 background: white !important;
+                margin: 0 0 6px 0 !important;
+                padding: 6px !important;
             }
 
             .info-item {
                 page-break-inside: avoid;
+                padding: 4px 6px !important;
+                margin: 0 !important;
+                border-bottom: 0.5px solid #e0e0e0 !important;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .info-label {
+                font-size: 10px !important;
+                font-weight: 600;
+                min-width: 80px !important;
+                color: #333 !important;
+            }
+
+            .info-value {
+                font-size: 10px !important;
+                color: #000 !important;
+                text-align: left;
+                flex: 1;
             }
 
             button {
@@ -205,6 +275,57 @@
             .collapsible-payments-section {
                 max-height: none !important;
                 overflow: visible !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .payment-item {
+                padding: 3px 0 !important;
+                margin: 0 !important;
+                font-size: 10px !important;
+            }
+
+            .total {
+                margin: 3px 0 0 0 !important;
+                padding: 3px 0 0 0 !important;
+                border-top: 0.5px solid #333 !important;
+                font-size: 11px !important;
+            }
+
+            .section-header {
+                font-size: 11px !important;
+                margin: 3px 0 3px 0 !important;
+                padding: 2px 0 !important;
+                border-right: 2px solid #3b82f6;
+            }
+
+            main {
+                orphans: 3;
+                widows: 3;
+            }
+
+            .flex {
+                display: flex !important;
+            }
+
+            .gap-4 {
+                gap: 0 !important;
+            }
+
+            .mb-6 {
+                margin-bottom: 4px !important;
+            }
+
+            .mt-6 {
+                margin-top: 4px !important;
+            }
+
+            .mr-3 {
+                margin-right: 2px !important;
+            }
+
+            .text-center {
+                text-align: center;
             }
         }
 
@@ -334,6 +455,32 @@
             }
         }
 
+        .payments-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+        }
+
+        .payments-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .payments-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .payments-scroll::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+
+        .payments-scroll::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
         .salary-card {
             background: var(--card-light);
             border-radius: 16px;
@@ -352,42 +499,6 @@
             top: 0;
             z-index: 10;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            background: var(--card-light);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .sticky-header-container {
-            display: grid;
-            gap: 8px;
-        }
-
-        .sticky-header-row {
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 16px;
-            align-items: center;
-            padding: 12px;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            border-radius: 8px;
-            border-left: 4px solid #3b82f6;
-        }
-
-        .sticky-header-label {
-            color: #1e40af;
-            font-weight: 700;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .sticky-header-item {
-            color: #0f172a;
-            font-weight: 600;
-            word-break: break-word;
-            direction: ltr;
         }
 
         .collapsible-payments-section {
@@ -477,14 +588,6 @@
             border-right: 4px solid #3b82f6;
         }
 
-        .divider-separator {
-            height: 2px;
-            background: linear-gradient(to right, #e0e7ff, transparent);
-            margin: 16px 0;
-            border-radius: 1px;
-            border: none;
-        }
-
         .data-clear-notification {
             position: fixed;
             bottom: 20px;
@@ -532,10 +635,6 @@
                 width: 100%;
             }
 
-            .sticky-header-row {
-                grid-template-columns: 1fr;
-            }
-
             .payment-item {
                 flex-direction: column;
                 align-items: flex-start;
@@ -574,14 +673,6 @@
             .data-clear-notification {
                 left: 10px;
                 right: 10px;
-            }
-
-            .divider-separator {
-                margin: 12px 0;
-            }
-
-            .basic-section-sticky {
-                padding: 12px;
             }
         }
     </style>
@@ -634,6 +725,7 @@
                         </div>
 
                         <button type="submit" id="search-btn"
+                            class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3 transition-all duration-200">
                             class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3 transition-colors">
                             <i class="fas fa-search mr-2" aria-hidden="true"></i>
                             البحث
@@ -649,8 +741,11 @@
                         بيانات الموظف
                     </h2>
                     <div class="flex items-center gap-3 flex-wrap">
-                        <button id="print-btn" class="bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors" title="اطبع البيانات">
+                        <button id="print-btn" class="bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors print-hidden" title="اطبع البيانات">
                             <i class="fas fa-print mr-2" aria-hidden="true"></i>طباعة
+                        </button>
+                        <button id="export-btn" class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors" title="حمل البيانات كـ CSV">
+                            <i class="fas fa-download mr-2" aria-hidden="true"></i>تحميل
                         </button>
                         <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
                             <i class="fas fa-search mr-2" aria-hidden="true"></i>بحث جديد
@@ -662,14 +757,6 @@
                     </div>
                 </div>
 
-                <!-- القسم الأساسي الثابت -->
-                <div id="basic-info-section" class="basic-section-sticky">
-                    <div class="sticky-header-container" id="sticky-header-container">
-                        <!-- سيتم ملء هذا ديناميكياً -->
-                    </div>
-                </div>
-
-                <!-- البيانات الإضافية -->
                 <div id="user-data"></div>
 
                 <div class="highlight-box mt-6">
@@ -811,6 +898,7 @@
                     <button type="button" id="cancel-email-btn" class="flex-1 text-slate-700 bg-slate-200 hover:bg-slate-300 font-medium rounded-xl text-lg px-6 py-3 transition-colors">
                         إلغاء
                     </button>
+                    <button type="submit" id="save-email-btn" class="flex-1 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-xl text-lg px-6 py-3 transition-all duration-200">
                     <button type="submit" id="save-email-btn" class="flex-1 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-xl text-lg px-6 py-3 transition-colors">
                         حفظ البريد
                     </button>
@@ -828,10 +916,6 @@
 
     <script type="module">
         import { CONFIG } from './config.js';
-
-        // ====================================================
-        //  الأدوات المساعدة (نفس الكود القديم)
-        // ====================================================
 
         let currentUser = null;
         let isPaymentsExpanded = true;
@@ -876,7 +960,7 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+                .replace(/'/g, '&#39;');
         }
 
         function normalizeKey(k) {
@@ -904,10 +988,6 @@
             if (isNaN(num)) return String(value);
             return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
-
-        // ====================================================
-        //  التخزين المؤقت (Cache)
-        // ====================================================
 
         const CACHE_KEY = 'payroll_search_cache';
         const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
@@ -938,13 +1018,8 @@
             }
         }
 
-        // ====================================================
-        //  البحث (نفس المنطق القديم مع GET)
-        // ====================================================
-
         async function searchUser(nationalId, email) {
             try {
-                // التحقق من الـ cache
                 const cached = getCachedResult(nationalId);
                 let result = null;
 
@@ -999,7 +1074,9 @@
                         const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
                         delete cache[nationalId];
                         localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-                    } catch (e) { /* ignore */ }
+                    } catch (e) {
+                        console.error('Cache clear error:', e);
+                    }
                     return { success: true, message: result.message || 'تم التحديث بنجاح' };
                 } else {
                     return { success: false, message: result.error || 'فشل التحديث' };
@@ -1009,10 +1086,6 @@
                 return { success: false, message: 'فشل الاتصال بالخادم: ' + error.message };
             }
         }
-
-        // ====================================================
-        //  دوال العرض (بنفس التصميم الجديد)
-        // ====================================================
 
         function makeInfoRow(label, value, iconClass, isCurrency = false) {
             const tpl = document.getElementById('info-row-template');
@@ -1052,20 +1125,70 @@
         function togglePaymentSection() {
             const paymentSection = document.getElementById('payments-section');
             const toggleBtn = document.getElementById('payments-toggle-btn');
+            if (!paymentSection) return;
+            const btn = document.getElementById('payments-toggle-btn');
             isPaymentsExpanded = !isPaymentsExpanded;
+            paymentSection.classList.toggle('collapsed');
+            btn?.classList.toggle('collapsed');
+        }
+
+        async function handleSearch(e) {
+            e.preventDefault();
+            const email = document.getElementById('email-input').value.trim();
+            const nationalId = document.getElementById('national-id-input').value.trim();
+
+            if (!email || !nationalId) {
+                alert('الرجاء إدخال البريد الإلكتروني والرقم القومي');
+                return;
+            }
+
+            if (!/^\d{14}$/.test(nationalId)) {
+                alert('الرقم القومي يجب أن يكون 14 رقمًا فقط');
+                return;
+            }
 
             if (isPaymentsExpanded) {
                 paymentSection.classList.remove('collapsed');
                 toggleBtn.classList.remove('collapsed');
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('البريد الإلكتروني غير صحيح');
+                return;
+            }
+
+            document.getElementById('search-btn').disabled = true;
+            document.getElementById('search-btn').innerHTML = '<span class="loading-spinner"></span>جاري البحث...';
+
+            const result = await searchUser(nationalId, email);
+
+            if (result.user) {
+                currentUser = result.user;
+                displayUserData(result.user, nationalId, result.requiresUpdate);
+                document.getElementById('error-section').style.display = 'none';
             } else {
                 paymentSection.classList.add('collapsed');
                 toggleBtn.classList.add('collapsed');
+                showError(result.message);
             }
         }
 
-        // ====================================================
-        //  عرض النتائج المحسّن مع البيانات الحقيقية
-        // ====================================================
+        function exportToCSV() {
+            if (!currentUser) return;
+            let csv = 'الحقل,القيمة\n';
+            Object.entries(currentUser).forEach(([key, value]) => {
+                const escapedValue = String(value).replace(/"/g, '""');
+                csv += `"${key}","${escapedValue}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download =
+                `موظف_${currentUser['الرقم القومى'] || 'بيانات'}_${new Date().toLocaleDateString('ar-EG')}.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
+            document.getElementById('search-btn').disabled = false;
+            document.getElementById('search-btn').innerHTML = '<i class="fas fa-search mr-2" aria-hidden="true"></i>البحث';
+        }
 
         function showResult(user) {
             document.querySelector('.search-container').style.display = 'none';
@@ -1073,49 +1196,40 @@
             document.getElementById('error-section').style.display = 'none';
             document.getElementById('result-section').style.display = 'block';
             document.getElementById('result-section').style.animation = 'slideInUp 0.4s ease-out';
+        function displayUserData(userData, nationalId, requiresUpdate) {
+            const userDataDiv = document.getElementById('user-data');
+            clearElement(userDataDiv);
 
-            // ===== القسم الأساسي الثابت =====
-            const container = document.getElementById('sticky-header-container');
+            const container = document.getElementById('user-data');
             clearElement(container);
 
-            // عرض الاسم والرقم القومي والدرجة في القسم الثابت
-            const stickyFields = [
-                { key: 'الاسم', label: 'الاسم', icon: 'fa-user' },
-                { key: 'الرقم القومى', label: 'الرقم القومي', icon: 'fa-id-card' },
-                { key: 'الدرجة', label: 'الدرجة', icon: 'fa-star' },
-                { key: 'الحالة الاجتماعية', label: 'الحالة الاجتماعية', icon: 'fa-people-arrows' },
-                { key: 'عدد التذاكر', label: 'عدد التذاكر', icon: 'fa-ticket-alt' }
-            ];
+            // الأساسية
+            const basicSection = document.createElement('div');
+            basicSection.className = 'salary-card basic-section-sticky';
+            const basicTitle = document.createElement('h3');
+            basicTitle.className = 'section-header';
+            basicTitle.innerHTML = '<i class="fas fa-user-circle ml-2"></i> المعلومات الأساسية';
+            basicSection.appendChild(basicTitle);
 
-            stickyFields.forEach(field => {
-                let value = user[normalizeKey(field.key)];
-                if (!value && field.key === 'عدد التذاكر') {
+            const basicFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر'];
+            basicFields.forEach(key => {
+                let value = user[normalizeKey(key)];
+                if (!value && key === 'عدد التذاكر') {
                     value = user['عدد التذاكر'] || user['عدد_التذاكر'] || user['تذاكر'] || '';
                 }
                 if (value) {
-                    const row = document.createElement('div');
-                    row.className = 'sticky-header-row';
-                    row.innerHTML = `
-                        <div class="sticky-header-label">
-                            <i class="fas ${field.icon}" aria-hidden="true"></i>
-                            ${field.label}
-                        </div>
-                        <div class="sticky-header-item">${escapeHTML(String(value))}</div>
-                    `;
-                    container.appendChild(row);
+                    const row = makeInfoRow(key, value, 'fa-info-circle', false);
+                    basicSection.appendChild(row);
                 }
             });
-
-            // ===== باقي البيانات في قسم "البيانات الإضافية" =====
-            const dataContainer = document.getElementById('user-data');
-            clearElement(dataContainer);
+            container.appendChild(basicSection);
 
             // الراتب
             const salarySection = document.createElement('div');
             salarySection.className = 'salary-card';
             const salaryTitle = document.createElement('h3');
             salaryTitle.className = 'section-header';
-            salaryTitle.innerHTML = '<i class="fas fa-money-bill-wave ml-2" aria-hidden="true"></i> الراتب';
+            salaryTitle.innerHTML = '<i class="fas fa-money-bill-wave ml-2"></i> الراتب';
             salarySection.appendChild(salaryTitle);
 
             const salaryFields = ['اساسى 30/6', 'اساسى يوليو 2025'];
@@ -1129,15 +1243,36 @@
                     salarySection.appendChild(row);
                 }
             });
-            dataContainer.appendChild(salarySection);
+            container.appendChild(salarySection);
 
-            // المدفوعات الإضافية (كل ما تبقى)
-            const excludeFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر',
-                'اساسى 30/6', 'اساسى يوليو 2025', 'اساسى 2014', 'البريد'
+            // زر طي المدفوعات
+            const toggleBtn = document.createElement('button');
+            toggleBtn.id = 'payments-toggle-btn';
+            toggleBtn.className = 'collapse-toggle-btn';
+            toggleBtn.type = 'button';
+            toggleBtn.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-list-ul ml-2" aria-hidden="true"></i>
+                    <span>المدفوعات الإضافية</span>
+                </div>
+                <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
+            `;
+            toggleBtn.addEventListener('click', togglePaymentSection);
+            container.appendChild(toggleBtn);
+
+            // المدفوعات
+            const paymentsSection = document.createElement('div');
+            paymentsSection.id = 'payments-section';
+            paymentsSection.className = 'collapsible-payments-section salary-card';
+
+            const excludeFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'الحالة الاجتماعية', 'عدد التذاكر', 'اساسى 30/6',
+                'اساسى يوليو 2025', 'البريد'
             ];
-
+            let totalPayments = 0;
             let hasPayments = false;
-            const paymentItems = [];
+
+            const paymentList = document.createElement('div');
+            paymentList.className = 'divide-y divide-slate-100';
 
             Object.keys(user).forEach(key => {
                 const normalized = normalizeKey(key);
@@ -1145,51 +1280,21 @@
                     const value = user[key];
                     if (value) {
                         hasPayments = true;
-                        paymentItems.push({ key, value });
+                        const numValue = parseFloat(value);
+                        if (!isNaN(numValue)) totalPayments += numValue;
+                        const row = document.createElement('div');
+                        row.className = 'payment-item';
+                        row.innerHTML = `
+                            <span class="font-medium text-slate-700">${escapeHTML(key)}</span>
+                            <span class="amount">${formatCurrency(value)}</span>
+                        `;
+                        paymentList.appendChild(row);
                     }
                 }
             });
 
             if (hasPayments) {
-                // زر طي المدفوعات
-                const toggleBtn = document.createElement('button');
-                toggleBtn.id = 'payments-toggle-btn';
-                toggleBtn.className = 'collapse-toggle-btn';
-                toggleBtn.type = 'button';
-                toggleBtn.innerHTML = `
-                    <div class="flex items-center">
-                        <i class="fas fa-list-ul ml-2" aria-hidden="true"></i>
-                        <span>المدفوعات الإضافية</span>
-                    </div>
-                    <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
-                `;
-                toggleBtn.addEventListener('click', togglePaymentSection);
-                dataContainer.appendChild(toggleBtn);
-
-                // قسم المدفوعات
-                const paymentsSection = document.createElement('div');
-                paymentsSection.id = 'payments-section';
-                paymentsSection.className = 'collapsible-payments-section salary-card';
-
-                let totalPayments = 0;
-                const paymentList = document.createElement('div');
-                paymentList.className = 'divide-y divide-slate-100';
-
-                paymentItems.forEach(({ key, value }) => {
-                    const numValue = parseFloat(value);
-                    if (!isNaN(numValue)) totalPayments += numValue;
-                    const row = document.createElement('div');
-                    row.className = 'payment-item';
-                    row.innerHTML = `
-                        <span class="font-medium text-slate-700">${escapeHTML(key)}</span>
-                        <span class="amount">${formatCurrency(value)}</span>
-                    `;
-                    paymentList.appendChild(row);
-                });
-
                 paymentsSection.appendChild(paymentList);
-
-                // إجمالي المدفوعات
                 const totalRow = document.createElement('div');
                 totalRow.className = 'total';
                 totalRow.innerHTML = `
@@ -1197,21 +1302,49 @@
                     <strong class="amount">${formatCurrency(totalPayments)}</strong>
                 `;
                 paymentsSection.appendChild(totalRow);
-
-                dataContainer.appendChild(paymentsSection);
-                isPaymentsExpanded = true;
             } else {
-                // إذا لم تكن هناك مدفوعات إضافية
                 const emptyMsg = document.createElement('p');
                 emptyMsg.className = 'text-slate-500 text-center py-4';
                 emptyMsg.textContent = 'لا توجد مدفوعات إضافية مسجلة.';
-                dataContainer.appendChild(emptyMsg);
-            }
-        }
+                paymentsSection.appendChild(emptyMsg);
+            basicSection.id = 'basic-section';
 
-        // ====================================================
-        //  باقي دوال الواجهة (نافذة البريد، الأحداث، إلخ)
-        // ====================================================
+            const basicHeader = document.createElement('div');
+            basicHeader.className = 'section-header';
+            basicHeader.textContent = 'البيانات الأساسية';
+            basicSection.appendChild(basicHeader);
+
+            const keys = Object.keys(userData);
+            for (const key of keys) {
+                const normalizedKey = normalizeKey(key);
+                if (!normalizedKey) continue;
+
+                const value = userData[key];
+                const isCurrency = normalizedKey.includes('صافي') || normalizedKey.includes('إجمالي') ||
+                    normalizedKey.includes('مقدار') || normalizedKey.includes('راتب') ||
+                    normalizedKey.includes('استقطاع') || normalizedKey.includes('متأخر');
+
+                const row = makeInfoRow(key, value, 'fa-user-tie', isCurrency);
+                basicSection.appendChild(row);
+            }
+
+            container.appendChild(paymentsSection);
+            isPaymentsExpanded = true;
+            userDataDiv.appendChild(basicSection);
+
+            if (requiresUpdate) {
+                const updateBtn = document.createElement('button');
+                updateBtn.type = 'button';
+                updateBtn.className = 'w-full bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors mt-4';
+                updateBtn.innerHTML = '<i class="fas fa-edit mr-2" aria-hidden="true"></i>تحديث البريد الإلكتروني';
+                updateBtn.addEventListener('click', () => openEmailModal(nationalId));
+                userDataDiv.appendChild(updateBtn);
+            }
+
+            document.querySelector('.search-container').style.display = 'none';
+            document.getElementById('instructions-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+        }
 
         function showError(message) {
             document.querySelector('.search-container').style.display = 'block';
@@ -1220,10 +1353,13 @@
             const err = document.getElementById('error-section');
             document.getElementById('error-message').textContent = message;
             err.style.display = 'block';
+            document.getElementById('error-section').style.display = 'block';
+            document.getElementById('result-section').style.display = 'none';
         }
 
         function openEmailModal(nationalId, hasEmail, prefilledEmail = '') {
             const modal = document.getElementById('email-modal');
+        function openEmailModal(nationalId) {
             document.getElementById('user-national-id').textContent = nationalId;
             const messageEl = document.getElementById('modal-message');
             if (hasEmail) {
@@ -1232,9 +1368,12 @@
                 messageEl.textContent = 'لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال البريد الإلكتروني.';
             }
             document.getElementById('new-email-input').value = prefilledEmail || '';
+            document.getElementById('new-email-input').value = '';
             document.getElementById('confirm-email-input').value = '';
+            document.getElementById('email-error').classList.add('hidden');
             document.getElementById('email-modal-overlay').style.display = 'block';
             modal.style.display = 'block';
+            document.getElementById('email-modal').style.display = 'block';
             document.getElementById('new-email-input').focus();
         }
 
@@ -1246,21 +1385,24 @@
             document.getElementById('confirm-email-input').value = '';
             document.getElementById('email-error').classList.add('hidden');
             document.getElementById('email-input').focus();
+            document.getElementById('email-modal').style.display = 'none';
         }
 
-        // ====================================================
-        //  ربط الأحداث
-        // ====================================================
-
-        document.getElementById('new-search-btn').addEventListener('click', function() {
+        // Events
+        document.getElementById('login-form').addEventListener('submit', handleSearch);
+        document.getElementById('print-btn').addEventListener('click', () => window.print());
+        document.getElementById('new-search-btn').addEventListener('click', () => {
             clearAllData();
+            document.getElementById('email-input').value = '';
+            document.getElementById('national-id-input').value = '';
+            document.getElementById('result-section').style.display = 'none';
+            document.querySelector('.search-container').style.display = 'block';
+            document.getElementById('instructions-section').style.display = 'block';
             document.getElementById('email-input').focus();
         });
 
-        document.getElementById('print-btn')?.addEventListener('click', function() {
-            window.print();
-        });
-
+        document.getElementById('print-btn')?.addEventListener('click', () => window.print());
+        document.getElementById('export-btn')?.addEventListener('click', exportToCSV);
         document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
         document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
         document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
@@ -1272,7 +1414,6 @@
             }
         });
 
-        // نموذج البحث
         document.getElementById('login-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const email = document.getElementById('email-input').value.trim();
@@ -1294,6 +1435,9 @@
             if (!emailRegex.test(email)) {
                 showError('صيغة البريد الإلكتروني غير صحيحة.');
                 document.getElementById('email-input').classList.add('input-error');
+        document.getElementById('export-btn').addEventListener('click', () => {
+            if (!currentUser) {
+                alert('لا توجد بيانات للتحميل');
                 return;
             }
 
@@ -1305,6 +1449,9 @@
 
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-search mr-2" aria-hidden="true"></i> البحث';
+            const csv = Object.keys(currentUser)
+                .map(key => `"${key}","${String(currentUser[key]).replace(/"/g, '""')}"`)
+                .join('\n');
 
             if (result.user) {
                 currentUser = result.user;
@@ -1316,12 +1463,22 @@
             } else {
                 showError(result.message);
             }
+            const link = document.createElement('a');
+            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+            link.download = 'employee-data.csv';
+            link.click();
         });
 
-        // نموذج تحديث البريد
         document.getElementById('email-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const email = document.getElementById('new-email-input').value.trim();
+        document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
+        document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
+        document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
+
+        document.getElementById('email-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newEmail = document.getElementById('new-email-input').value.trim();
             const confirmEmail = document.getElementById('confirm-email-input').value.trim();
             const errorElement = document.getElementById('email-error');
             const nationalId = document.getElementById('user-national-id').textContent;
@@ -1331,6 +1488,8 @@
             if (email !== confirmEmail) {
                 document.getElementById('email-error-message').textContent = 'البريد الإلكتروني وتأكيده غير متطابقين.';
                 errorElement.classList.remove('hidden');
+            if (!newEmail || !confirmEmail) {
+                showEmailError('الرجاء ملء جميع الحقول');
                 return;
             }
 
@@ -1338,17 +1497,27 @@
             if (!emailRegex.test(email)) {
                 document.getElementById('email-error-message').textContent = 'صيغة البريد الإلكتروني غير صحيحة.';
                 errorElement.classList.remove('hidden');
+            if (newEmail !== confirmEmail) {
+                showEmailError('البريد الإلكتروني غير متطابق');
                 return;
             }
 
             const saveBtn = document.getElementById('save-email-btn');
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري الحفظ...';
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+                showEmailError('البريد الإلكتروني غير صحيح');
+                return;
+            }
 
             const updateResult = await updateUserEmail(nationalId, email);
+            const btn = document.getElementById('save-email-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span>جاري الحفظ...';
 
             saveBtn.disabled = false;
             saveBtn.innerHTML = 'حفظ البريد';
+            const updateResult = await updateUserEmail(nationalId, newEmail);
 
             if (updateResult.success) {
                 if (currentUser) currentUser['البريد'] = email;
@@ -1357,26 +1526,35 @@
                 const success = document.getElementById('update-success');
                 success.style.display = 'flex';
                 setTimeout(() => success.style.display = 'none', 5000);
+                document.getElementById('update-success').style.display = 'inline-flex';
+                setTimeout(() => {
+                    document.getElementById('update-success').style.display = 'none';
+                }, 4000);
             } else {
                 document.getElementById('email-error-message').textContent = updateResult.message;
                 errorElement.classList.remove('hidden');
+                showEmailError(updateResult.message);
             }
         });
 
         // استعادة آخر بريد
         try {
             const lastEmail = localStorage.getItem('last_used_email');
-            if (lastEmail) {
-                document.getElementById('email-input').value = lastEmail;
-            }
+            if (lastEmail) document.getElementById('email-input').value = lastEmail;
         } catch (e) { /* ignore */ }
 
         document.getElementById('login-form').addEventListener('submit', function() {
             try {
-                const email = document.getElementById('email-input').value.trim();
-                localStorage.setItem('last_used_email', email);
+                localStorage.setItem('last_used_email', document.getElementById('email-input').value.trim());
             } catch (e) { /* ignore */ }
+            btn.disabled = false;
+            btn.innerHTML = 'حفظ البريد';
         });
+
+        function showEmailError(message) {
+            document.getElementById('email-error-message').textContent = message;
+            document.getElementById('email-error').classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
