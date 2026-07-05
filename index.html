@@ -512,21 +512,14 @@
         },
 
         validateNationalId(id) {
+            // التحقق الأساسي: 14 رقمًا فقط
             if (!/^\d{14}$/.test(id)) return false;
             
-            // Egyptian National ID checksum validation
-            const weights = [2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2];
-            const digits = id.slice(0, 13).split('').map(Number);
-            const checkDigit = Number(id[13]);
-            
-            let sum = 0;
-            digits.forEach((d, i) => {
-                let product = d * weights[i];
-                sum += product > 9 ? product - 9 : product;
-            });
-            
-            const calculated = (10 - (sum % 10)) % 10;
-            return calculated === checkDigit;
+            // ملاحظة: تم إلغاء التحقق من checksum (رقم التحقق) مؤقتًا
+            // لأن خوارزمية Luhn قد تختلف عن تلك المستخدمة في الرقم القومي المصري
+            // مما تسبب في رفض أرقام صحيحة. 
+            // يمكن إعادة تفعيله لاحقًا إذا تم التأكد من الخوارزمية الصحيحة.
+            return true;
         },
 
         sanitizeInput(input) {
@@ -980,7 +973,7 @@
 
             // Validate National ID
             if (!Validator.validateNationalId(nationalId)) {
-                UI.showError('الرقم القومي يجب أن يتكون من 14 رقمًا صحيحًا.');
+                UI.showError('الرقم القومي يجب أن يتكون من 14 رقمًا فقط.');
                 document.getElementById('national-id-input').classList.add('input-error');
                 return;
             }
