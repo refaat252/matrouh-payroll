@@ -197,6 +197,16 @@
         .toast.success { border-right-color: #10b981; }
         .toast.error { border-right-color: #ef4444; }
         .toast.info { border-right-color: #3b82f6; }
+        .debug-info {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #92400e;
+            display: none;
+        }
     </style>
 </head>
 <body class="text-slate-800">
@@ -215,6 +225,9 @@
             <p class="text-slate-600 max-w-2xl mx-auto">
                 نظام متكامل للبحث عن بيانات الموظفين باستخدام الرقم القومي و البريد الإلكتروني
             </p>
+            <div id="data-status" class="mt-3 text-sm font-medium">
+                <span class="text-amber-600"><i class="fas fa-circle-notch fa-spin mr-1"></i> جاري تحميل البيانات...</span>
+            </div>
         </header>
 
         <main>
@@ -256,6 +269,12 @@
                         البحث
                     </button>
                 </form>
+                
+                <!-- Debug info for troubleshooting -->
+                <div id="debug-panel" class="debug-info">
+                    <strong>معلومات التشخيص:</strong>
+                    <div id="debug-content"></div>
+                </div>
             </div>
         </div>
 
@@ -441,13 +460,13 @@
     <script type="module">
     /**
      * ============================================
-     * Data Service Layer - فصل طبقة البيانات
+     * Data Service Layer
      * ============================================
      */
     const CONFIG = {
         SHEET_URL: "https://opensheet.elk.sh/1IC_POuvxv9X2vE862HkoGlrvIIxnWgmJ4-jEMXRi0bk/Sheet1",
         GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbyfjH09tRmGTdJ-QSK5PrcWD40W9tTZ5gmKd_XpZc5DHvstBe3sF5uwP2zz53aEWsNt/exec",
-        FETCH_TIMEOUT: 10000,
+        FETCH_TIMEOUT: 15000,
         MAX_RETRIES: 3,
         RETRY_DELAY: 1000
     };
@@ -455,10 +474,9 @@
     const STORAGE_KEYS = {
         USERS_DATA: 'nagila_users_data',
         LAST_FETCH: 'nagila_last_fetch',
-        CACHE_TTL: 1000 * 60 * 30 // 30 minutes
+        CACHE_TTL: 1000 * 60 * 30
     };
 
-    // Indexes for O(1) lookup
     const indexes = {
         byId: new Map(),
         byEmail: new Map()
@@ -467,10 +485,8 @@
     let usersData = [];
     let currentUser = null;
     let modalKeyHandler = null;
+    let dataLoaded = false;
 
-    /**
-     * Utility Functions
-     */
     const Utils = {
         escapeHTML(str) {
             if (str === null || str === undefined) return '';
@@ -488,22 +504,11 @@
             return String(v).trim();
         },
 
-        debounce(fn, ms) {
-            let timeout;
-            return (...args) => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => fn(...args), ms);
-            };
-        },
-
         async sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
     };
 
-    /**
-     * Validation Module
-     */
     const Validator = {
         EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/,
 
@@ -512,14 +517,8 @@
         },
 
         validateNationalId(id) {
-            // التحقق الأساسي: 14 رقمًا فقط
-            if (!/^\d{14}$/.test(id)) return false;
-            
-            // ملاحظة: تم إلغاء التحقق من checksum (رقم التحقق) مؤقتًا
-            // لأن خوارزمية Luhn قد تختلف عن تلك المستخدمة في الرقم القومي المصري
-            // مما تسبب في رفض أرقام صحيحة. 
-            // يمكن إعادة تفعيله لاحقًا إذا تم التأكد من الخوارزمية الصحيحة.
-            return true;
+            // التحقق الأساسي فقط: 14 رقمًا
+            return /^\d{14}$/.test(id);
         },
 
         sanitizeInput(input) {
@@ -527,9 +526,6 @@
         }
     };
 
-    /**
-     * Data Manager
-     */
     const DataManager = {
         extractNationalId(item) {
             const idCandidates = ['الرقم القومى', 'الرقم القومي', 'nationalId', 'id', 'الرقم_القومي'];
@@ -539,7 +535,6 @@
                 if (val) return Utils.normalizeValue(val);
             }
             
-            // Fallback: search by partial key match
             for (const key of Object.keys(item)) {
                 const nk = Utils.normalizeKey(key);
                 if (nk.includes('رقم') && nk.includes('قوم')) {
@@ -567,6 +562,28 @@
                     if (email) indexes.byEmail.set(email, id);
                 }
             });
+            
+            console.log(`Indexed ${indexes.byId.size} users`);
+        },
+
+        updateDataStatus(status, message) {
+            const el = document.getElementById('data-status');
+            if (!el) return;
+            
+            const icons = {
+                loading: '<i class="fas fa-circle-notch fa-spin mr-1"></i>',
+                success: '<i class="fas fa-check-circle mr-1"></i>',
+                error: '<i class="fas fa-exclamation-triangle mr-1"></i>'
+            };
+            
+            const colors = {
+                loading: 'text-amber-600',
+                success: 'text-green-600',
+                error: 'text-red-600'
+            };
+            
+            el.innerHTML = `${icons[status] || icons.loading} ${message}`;
+            el.className = `mt-3 text-sm font-medium ${colors[status] || colors.loading}`;
         },
 
         async fetchWithRetry(url, options = {}, retries = CONFIG.MAX_RETRIES) {
@@ -593,6 +610,8 @@
         },
 
         async loadData() {
+            this.updateDataStatus('loading', 'جاري تحميل البيانات...');
+            
             // Try cache first
             const cached = localStorage.getItem(STORAGE_KEYS.USERS_DATA);
             const lastFetch = localStorage.getItem(STORAGE_KEYS.LAST_FETCH);
@@ -602,14 +621,14 @@
                 try {
                     usersData = JSON.parse(cached);
                     this.buildIndexes(usersData);
-                    UI.showToast('تم تحميل البيانات من الذاكرة المؤقتة', 'info');
+                    dataLoaded = true;
+                    this.updateDataStatus('success', `تم تحميل ${indexes.byId.size} سجل من الذاكرة المؤقتة`);
                     return;
                 } catch (e) {
                     console.warn('Cache parse failed, fetching fresh data');
                 }
             }
 
-            UI.showLoadingState(true);
             try {
                 const response = await this.fetchWithRetry(CONFIG.SHEET_URL);
                 const json = await response.json();
@@ -625,28 +644,29 @@
                 });
                 
                 this.buildIndexes(usersData);
+                dataLoaded = true;
                 
-                // Update cache
                 localStorage.setItem(STORAGE_KEYS.USERS_DATA, JSON.stringify(usersData));
                 localStorage.setItem(STORAGE_KEYS.LAST_FETCH, now.toString());
                 
-                UI.showToast('تم تحديث البيانات بنجاح', 'success');
+                this.updateDataStatus('success', `تم تحميل ${indexes.byId.size} سجل بنجاح`);
             } catch (err) {
                 console.error('Data load failed:', err);
-                // Fallback to cache if available
+                
                 if (cached) {
                     try {
                         usersData = JSON.parse(cached);
                         this.buildIndexes(usersData);
-                        UI.showToast('تم تحميل البيانات المخزنة (قد تكون غير محدثة)', 'info');
+                        dataLoaded = true;
+                        this.updateDataStatus('success', `تم تحميل ${indexes.byId.size} سجل (بيانات مخزنة)`);
                     } catch (e) {
-                        UI.showError('فشل تحميل البيانات. الرجاء تحديث الصفحة والمحاولة مرة أخرى.');
+                        dataLoaded = false;
+                        this.updateDataStatus('error', 'فشل تحميل البيانات. الرجاء تحديث الصفحة.');
                     }
                 } else {
-                    UI.showError('فشل تحميل البيانات. الرجاء التحقق من الاتصال بالإنترنت.');
+                    dataLoaded = false;
+                    this.updateDataStatus('error', 'فشل الاتصال بقاعدة البيانات');
                 }
-            } finally {
-                UI.showLoadingState(false);
             }
         },
 
@@ -658,7 +678,6 @@
                 saveButton.disabled = true;
                 saveButton.innerHTML = '<div class="loading-spinner" aria-hidden="true"></div> جاري الحفظ...';
 
-                // Try JSON first, fallback to form data
                 let response;
                 try {
                     response = await this.fetchWithRetry(CONFIG.GAS_WEB_APP_URL, {
@@ -667,7 +686,6 @@
                         body: JSON.stringify({ nationalId, email: newEmail })
                     });
                 } catch (jsonErr) {
-                    // Fallback to form-urlencoded
                     const params = new URLSearchParams({ nationalId, email: newEmail });
                     response = await this.fetchWithRetry(CONFIG.GAS_WEB_APP_URL, {
                         method: 'POST',
@@ -679,7 +697,6 @@
                 const result = await response.json();
 
                 if (result && result.status === 'success') {
-                    // Update local cache
                     const user = indexes.byId.get(nationalId);
                     if (user) {
                         const oldEmail = DataManager.extractEmail(user).toLowerCase();
@@ -691,7 +708,6 @@
                         currentUser = user;
                     }
                     
-                    // Update persistent cache
                     localStorage.setItem(STORAGE_KEYS.USERS_DATA, JSON.stringify(usersData));
                     
                     return { success: true, message: 'تم تحديث البريد الإلكتروني بنجاح' };
@@ -708,9 +724,6 @@
         }
     };
 
-    /**
-     * UI Manager
-     */
     const UI = {
         showToast(message, type = 'info', duration = 4000) {
             const toast = document.getElementById('toast');
@@ -815,7 +828,6 @@
             const container = document.getElementById('user-data');
             this.clearElement(container);
 
-            // Basic fields
             const basicWrapper = document.createElement('div');
             basicWrapper.className = 'divide-y divide-slate-100';
 
@@ -833,7 +845,6 @@
 
             container.appendChild(basicWrapper);
 
-            // Additional fields (payments)
             const additional = Object.keys(user).filter(k => {
                 const nk = Utils.normalizeKey(k);
                 return !fieldsToDisplay.some(f => Utils.normalizeKey(f) === nk) &&
@@ -883,7 +894,6 @@
             document.getElementById('email-modal-overlay').style.display = 'block';
             modal.style.display = 'block';
 
-            // Remove old handler to prevent memory leak
             if (modalKeyHandler) {
                 modal.removeEventListener('keydown', modalKeyHandler);
             }
@@ -936,11 +946,7 @@
         }
     };
 
-    /**
-     * Event Handlers
-     */
     function initEventListeners() {
-        // New search
         document.getElementById('new-search-btn').addEventListener('click', () => {
             document.querySelector('.search-container').style.display = 'block';
             document.getElementById('result-section').style.display = 'none';
@@ -950,17 +956,14 @@
             document.getElementById('email-input').focus();
         });
 
-        // Modal controls
         document.getElementById('close-email-modal').addEventListener('click', () => UI.closeEmailModal());
         document.getElementById('cancel-email-btn').addEventListener('click', () => UI.closeEmailModal());
         document.getElementById('email-modal-overlay').addEventListener('click', () => UI.closeEmailModal());
 
-        // National ID input sanitization
         document.getElementById('national-id-input').addEventListener('input', function(e) {
             this.value = Validator.sanitizeInput(this.value);
         });
 
-        // Main search form
         document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault();
             UI.clearError();
@@ -971,17 +974,23 @@
             document.getElementById('result-section').style.display = 'none';
             document.getElementById('update-success').style.display = 'none';
 
-            // Validate National ID
+            // Debug info
+            console.log('Submitting:', { email, nationalId, length: nationalId.length, dataLoaded, usersCount: indexes.byId.size });
+
             if (!Validator.validateNationalId(nationalId)) {
                 UI.showError('الرقم القومي يجب أن يتكون من 14 رقمًا فقط.');
                 document.getElementById('national-id-input').classList.add('input-error');
                 return;
             }
             
-            // Validate Email
             if (!Validator.validateEmail(email)) {
                 UI.showError('صيغة البريد الإلكتروني غير صحيحة.');
                 document.getElementById('email-input').classList.add('input-error');
+                return;
+            }
+
+            if (!dataLoaded) {
+                UI.showError('البيانات لم تُحمّل بعد. الرجاء الانتظار ثم المحاولة مرة أخرى.');
                 return;
             }
 
@@ -1007,7 +1016,6 @@
             }
         });
 
-        // Email update form
         document.getElementById('email-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const email = document.getElementById('new-email-input').value.trim();
@@ -1029,7 +1037,6 @@
                 return;
             }
             
-            // Check if email exists for another user
             const existingId = indexes.byEmail.get(email.toLowerCase());
             if (existingId && existingId !== nationalId) {
                 document.getElementById('email-error-message').textContent = 'البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.';
@@ -1052,7 +1059,6 @@
             }
         });
 
-        // Global Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 const modal = document.getElementById('email-modal');
@@ -1061,9 +1067,6 @@
         });
     }
 
-    /**
-     * Initialization
-     */
     document.addEventListener('DOMContentLoaded', () => {
         DataManager.loadData();
         initEventListeners();
