@@ -11,7 +11,7 @@ try {
     console.error('[CONFIG] Failed to load config.js:', e);
     // Fallback configuration
     CONFIG = {
-        API_URL: 'https://script.google.com/macros/s/AKfycbzY_p8XZdOeCbIAyd0pKfL9w5T3wk8z5J-fm2AF6PUwHaUSRJV747_m6qSFnAbysHyLjA/exec',
+        API_URL: 'https://script.google.com/macros/s/AKfycbztZXccO_cDgD57zSPrt5sZT_6r36va7eSXnXIDZiColDdON3lAZ-OidOTnU2JRYL-onA/exec',
         API_KEY: 'XyZ@2025!Secure'
     };
 }
