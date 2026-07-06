@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>إدارة النجيلة التعليمية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">اذهب إلى المحتوى الرئيسي</a>
+
+    <div class="container mx-auto max-w-4xl py-10 px-4">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-blue-700 mb-3">
+                <i class="fas fa-id-card mr-2" aria-hidden="true"></i>
+                إدارة النجيلة التعليمية
+            </h1>
+            <p class="text-slate-600 max-w-2xl mx-auto">
+                نظام متكامل للبحث عن بيانات الموظفين باستخدام الرقم القومي والبريد الإلكتروني
+            </p>
+        </header>
+
+        <main id="main-content">
+            <div class="search-container bg-white mb-10">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 py-5 px-6">
+                    <h2 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-search mr-3" aria-hidden="true"></i>
+                        بيانات الموظف
+                    </h2>
+                </div>
+
+                <div class="p-6">
+                    <form id="login-form" class="flex flex-col gap-5" novalidate>
+                        <div>
+                            <label for="email-input" class="block text-slate-700 mb-2 font-medium">
+                                <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
+                                البريد الإلكتروني
+                            </label>
+                            <input type="email" id="email-input" name="email" autocomplete="email"
+                                class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                                placeholder="ادخل البريد الإلكتروني..." required>
+                            <small class="text-slate-500 mt-1 block">سيتم حفظ البريد محليًا فقط</small>
+                        </div>
+
+                        <div>
+                            <label for="national-id-input" class="block text-slate-700 mb-2 font-medium">
+                                <i class="fas fa-id-card mr-2 text-blue-500" aria-hidden="true"></i>
+                                الرقم القومي
+                            </label>
+                            <input type="text" inputmode="numeric" pattern="\d{14}" id="national-id-input" name="nationalId"
+                                class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                                placeholder="ادخل الرقم القومي (14 رقمًا)..." maxlength="14" required aria-describedby="nid-help">
+                            <p id="nid-help" class="text-sm text-slate-500 mt-1">يجب أن يتكون الرقم القومي من 14 رقمًا فقط</p>
+                        </div>
+
+                        <button type="submit" id="search-btn"
+                            class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3 transition-colors">
+                            <i class="fas fa-search mr-2" aria-hidden="true"></i>
+                            البحث
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;" aria-live="polite">
+                <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+                    <h2 class="text-2xl font-bold text-blue-700 flex items-center">
+                        <i class="fas fa-user-circle mr-3" aria-hidden="true"></i>
+                        بيانات الموظف
+                    </h2>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <button id="print-btn" class="bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors" title="اطبع البيانات">
+                            <i class="fas fa-print mr-2" aria-hidden="true"></i>طباعة
+                        </button>
+                        <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-search mr-2" aria-hidden="true"></i>بحث جديد
+                        </button>
+                        <div id="update-success" class="success-badge" style="display:none;" role="status" aria-live="polite">
+                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                            تم تحديث البيانات بنجاح
+                        </div>
+                    </div>
+                </div>
+
+                <div id="basic-info-section" class="basic-section-sticky">
+                    <div class="sticky-header-container" id="sticky-header-container"></div>
+                </div>
+
+                <div id="user-data"></div>
+
+                <div class="highlight-box mt-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1" aria-hidden="true"></i>
+                        <div>
+                            <h3 class="font-bold text-blue-800">ملاحظات هامة</h3>
+                            <p class="text-slate-700 mt-2">
+                                • هذه البيانات غير رسمية <br>
+                                • ولا يعتد بها أمام أي جهة قانونية
+                            </p>
+                            <h4 class="font-bold text-blue-700 mt-4 mb-2">للتواصل مع الدعم الفني:</h4>
+                            <ul class="text-slate-700 space-y-1">
+                                <li>
+                                    <i class="fab fa-whatsapp text-green-500 w-5" aria-hidden="true"></i>
+                                    واتساب: <a href="https://wa.me/201009844479" class="text-blue-600 hover:underline">201009844479</a>
+                                </li>
+                                <li>
+                                    <i class="fas fa-phone text-blue-500 w-5" aria-hidden="true"></i>
+                                    اتصال مباشر: <a href="tel:+201009844479" class="text-blue-600 hover:underline">201009844479</a>
+                                </li>
+                                <li>
+                                    <i class="fas fa-envelope text-red-500 w-5" aria-hidden="true"></i>
+                                    بريد إلكتروني: <a href="mailto:refaat252@gmail.com" class="text-blue-600 hover:underline">refaat252@gmail.com</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="error-section" class="bg-red-50 border border-red-200 rounded-xl p-5 mt-6" style="display:none;" role="alert" aria-live="assertive">
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-circle text-red-500 text-2xl mt-1 mr-3" aria-hidden="true"></i>
+                    <div>
+                        <h3 class="font-bold text-red-700 text-lg">خطأ في عملية البحث</h3>
+                        <p id="error-message" class="text-red-600 mt-1">حدث خطأ أثناء عملية البحث. الرجاء المحاولة مرة أخرى.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="instructions-section" class="bg-blue-50 rounded-2xl p-6 mt-10">
+                <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
+                    <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
+                    تعليمات الاستخدام
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-id-card text-blue-600" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">الرقم القومي</h4>
+                            <p class="text-slate-700 text-sm mt-1">يجب إدخال 14 رقمًا فقط دون أي أحرف أو رموز</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-at text-blue-600" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">البريد الإلكتروني</h4>
+                            <p class="text-slate-700 text-sm mt-1">يجب أن يكون البريد الإلكتروني بتنسيق صحيح</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-sync-alt text-blue-600" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">تحديث البيانات</h4>
+                            <p class="text-slate-700 text-sm mt-1">يمكنك تحديث البريد الإلكتروني إذا لم يكن مرتبطًا بالرقم القومي</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-shield-alt text-blue-600" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">الأمان والخصوصية</h4>
+                            <p class="text-slate-700 text-sm mt-1">جميع البيانات محمية ولا يتم مشاركتها مع أي جهات خارجية</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="email-modal-overlay" tabindex="-1"></div>
+    <div class="email-modal" id="email-modal" role="dialog" aria-modal="true" aria-labelledby="email-modal-title" aria-describedby="modal-message">
+        <div class="bg-white rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="email-modal-title" class="text-xl font-bold text-blue-700 flex items-center">
+                    <i class="fas fa-envelope mr-2" aria-hidden="true"></i>
+                    تحديث البريد الإلكتروني
+                </h3>
+                <button id="close-email-modal" class="text-slate-500 hover:text-slate-700" aria-label="إغلاق النافذة">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="mb-4 bg-blue-50 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i class="fas fa-info-circle text-blue-500 mr-2" aria-hidden="true"></i>
+                    <p class="text-blue-800">
+                        الرقم القومي: <span id="user-national-id" class="font-bold"></span>
+                    </p>
+                </div>
+                <p id="modal-message" class="text-slate-700 mt-2">يمكنك إضافة أو تحديث البريد الإلكتروني لهذا الحساب.</p>
+            </div>
+
+            <form id="email-form" novalidate>
+                <div class="mb-4">
+                    <label for="new-email-input" class="block text-slate-700 mb-2 font-medium">
+                        <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
+                        البريد الإلكتروني الجديد
+                    </label>
+                    <input type="email" id="new-email-input" name="newEmail" autocomplete="email"
+                        class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                        placeholder="example@domain.com" required>
+                    <div id="email-error" class="text-red-500 text-sm mt-2 hidden" role="alert">
+                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+                        <span id="email-error-message"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="confirm-email-input" class="block text-slate-700 mb-2 font-medium">
+                        <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
+                        تأكيد البريد الإلكتروني
+                    </label>
+                    <input type="email" id="confirm-email-input" name="confirmEmail" autocomplete="off"
+                        class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                        placeholder="أعد إدخال البريد الإلكتروني" required>
+                </div>
+
+                <div class="flex gap-3 mt-6">
+                    <button type="button" id="cancel-email-btn" class="flex-1 text-slate-700 bg-slate-200 hover:bg-slate-300 font-medium rounded-xl text-lg px-6 py-3 transition-colors">
+                        إلغاء
+                    </button>
+                    <button type="submit" id="save-email-btn" class="flex-1 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-xl text-lg px-6 py-3 transition-colors">
+                        حفظ البريد
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <template id="info-row-template">
+        <div class="info-item">
+            <div class="info-label"></div>
+            <div class="info-value"></div>
+        </div>
+    </template>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
