@@ -846,12 +846,15 @@ button {
 }
 
 /* ===== Print Styles (محسّنة بالكامل) ===== */
-@media print {
-    @page {
-        size: A4;
-        margin: 15mm 12mm;
-    }
+/* ✅ صحيح */
+@page {
+    size: A4;
+    margin: 15mm 12mm;
+}
 
+@media print {
+    /* ... */
+}
     /* إخفاء كل العناصر التفاعلية */
     .search-container,
     #instructions-section,
