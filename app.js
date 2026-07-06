@@ -1,5 +1,5 @@
 // ====================================================
-//  Configuration & Error Handling
+//  Configuration
 // ====================================================
 
 let CONFIG;
@@ -9,7 +9,6 @@ try {
     CONFIG = configModule.CONFIG;
 } catch (e) {
     console.error('[CONFIG] Failed to load config.js:', e);
-    // Fallback configuration
     CONFIG = {
         API_URL: 'https://script.google.com/macros/s/AKfycbztZXccO_cDgD57zSPrt5sZT_6r36va7eSXnXIDZiColDdON3lAZ-OidOTnU2JRYL-onA/exec',
         API_KEY: 'XyZ@2025!Secure'
@@ -21,10 +20,10 @@ try {
 // ====================================================
 
 const CACHE_KEY = 'payroll_search_cache';
-const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
-const AUTO_CLEAR_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
+const AUTO_CLEAR_TIMEOUT = 30 * 60 * 1000;
 const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000; // 1 second
+const RETRY_DELAY = 1000;
 
 // ====================================================
 //  State
@@ -66,26 +65,18 @@ function formatNumber(value) {
 
 function validateEgyptianNationalId(id) {
     if (!/^\d{14}$/.test(id)) return false;
-
-    // Extract birth date info
     const century = id[0] === '2' ? 1900 : id[0] === '3' ? 2000 : null;
     if (!century) return false;
-
     const year = century + parseInt(id.substring(1, 3));
     const month = parseInt(id.substring(3, 5));
     const day = parseInt(id.substring(5, 7));
-
-    // Validate date
     const birthDate = new Date(year, month - 1, day);
     if (birthDate.getFullYear() !== year || birthDate.getMonth() !== month - 1 || birthDate.getDate() !== day) {
         return false;
     }
-
-    // Validate governorate (positions 7-8)
     const govCode = parseInt(id.substring(7, 9));
     const validGovCodes = [1, 2, 3, 4, 11, 12, 13, 14, 15, 16, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 32, 33, 34, 35, 88];
     if (!validGovCodes.includes(govCode)) return false;
-
     return true;
 }
 
@@ -199,7 +190,7 @@ function showDataClearNotification() {
 }
 
 // ====================================================
-//  API Functions (POST only for security)
+//  API Functions (GET for search, POST FormData for update)
 // ====================================================
 
 async function searchUser(nationalId, email) {
@@ -210,15 +201,14 @@ async function searchUser(nationalId, email) {
             return processSearchResult(cached, email);
         }
 
-        // POST request (secure - API_KEY in body, not URL)
-        const response = await fetchWithRetry(CONFIG.API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                key: CONFIG.API_KEY,
-                action: 'search',
-                nationalId: nationalId
-            }),
+        // ✅ GET request — no CORS Preflight!
+        const url = new URL(CONFIG.API_URL);
+        url.searchParams.append('key', CONFIG.API_KEY);
+        url.searchParams.append('action', 'search');
+        url.searchParams.append('nationalId', nationalId);
+
+        const response = await fetchWithRetry(url.toString(), {
+            method: 'GET',
             timeout: 15000
         });
 
@@ -229,7 +219,7 @@ async function searchUser(nationalId, email) {
             return processSearchResult(result, email);
         }
 
-        return { user: null, message: result.message || 'لم يتم العثور على المستخدم' };
+        return { user: null, message: result.error || 'لم يتم العثور على المستخدم' };
     } catch (error) {
         console.error('[API] Search failed:', error);
         return { user: null, message: 'فشل الاتصال بالخادم: ' + error.message };
@@ -252,15 +242,17 @@ function processSearchResult(result, email) {
 
 async function updateUserEmail(nationalId, newEmail) {
     try {
+        // ✅ POST with URLSearchParams (FormData) — no CORS Preflight!
+        const formData = new URLSearchParams();
+        formData.append('key', CONFIG.API_KEY);
+        formData.append('action', 'updateEmail');
+        formData.append('nationalId', nationalId);
+        formData.append('email', newEmail);
+
         const response = await fetchWithRetry(CONFIG.API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                key: CONFIG.API_KEY,
-                action: 'updateEmail',
-                nationalId: nationalId,
-                email: newEmail
-            }),
+            body: formData,
+            // ❌ NO custom headers! Let browser set Content-Type automatically
             timeout: 15000
         });
 
@@ -478,7 +470,6 @@ function openEmailModal(nationalId, hasEmail, prefilledEmail = '') {
     overlay.style.display = 'block';
     modal.style.display = 'block';
 
-    // Focus trap
     setupFocusTrap(modal);
     document.getElementById('new-email-input').focus();
 }
@@ -493,7 +484,6 @@ function closeEmailModal() {
     document.getElementById('confirm-email-input').value = '';
     document.getElementById('email-error').classList.add('hidden');
 
-    // Remove focus trap
     if (modalFocusTrap) {
         modal.removeEventListener('keydown', modalFocusTrap);
         modalFocusTrap = null;
@@ -532,7 +522,6 @@ function setupFocusTrap(modal) {
 //  Event Listeners
 // ====================================================
 
-// Search form
 document.getElementById('login-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -541,33 +530,28 @@ document.getElementById('login-form').addEventListener('submit', async function(
     const email = emailInput.value.trim();
     const nationalId = nationalIdInput.value.trim();
 
-    // Clear errors
     emailInput.classList.remove('input-error');
     nationalIdInput.classList.remove('input-error');
     document.getElementById('error-section').style.display = 'none';
     document.getElementById('result-section').style.display = 'none';
     document.getElementById('update-success').style.display = 'none';
 
-    // Validate national ID
     if (!validateEgyptianNationalId(nationalId)) {
         showError('الرقم القومي يجب أن يتكون من 14 رقمًا صحيحًا (تاريخ ميلاد + محافظة صالحة).');
         nationalIdInput.classList.add('input-error');
         return;
     }
 
-    // Validate email
     if (!validateEmail(email)) {
         showError('صيغة البريد الإلكتروني غير صحيحة.');
         emailInput.classList.add('input-error');
         return;
     }
 
-    // Save email locally
     try {
         localStorage.setItem('last_used_email', email);
     } catch (e) { /* ignore */ }
 
-    // Search
     const btn = document.getElementById('search-btn');
     btn.disabled = true;
     btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري البحث...';
@@ -589,23 +573,19 @@ document.getElementById('login-form').addEventListener('submit', async function(
     }
 });
 
-// New search
 document.getElementById('new-search-btn').addEventListener('click', function() {
     clearAllData();
     document.getElementById('email-input').focus();
 });
 
-// Print
 document.getElementById('print-btn')?.addEventListener('click', function() {
     window.print();
 });
 
-// Modal controls
 document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
 document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
 document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
 
-// Escape key
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         const modal = document.getElementById('email-modal');
@@ -615,7 +595,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Email update form
 document.getElementById('email-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -664,7 +643,6 @@ document.getElementById('email-form').addEventListener('submit', async function(
 //  Initialization
 // ====================================================
 
-// Restore last email
 try {
     const lastEmail = localStorage.getItem('last_used_email');
     if (lastEmail) {
@@ -672,7 +650,6 @@ try {
     }
 } catch (e) { /* ignore */ }
 
-// Focus first input
 document.getElementById('email-input').focus();
 
 console.log('[APP] Initialized successfully');
